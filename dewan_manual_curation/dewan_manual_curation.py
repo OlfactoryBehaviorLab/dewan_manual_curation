@@ -1,4 +1,3 @@
-#import sys
 import qdarktheme
 from PySide6.QtWidgets import QApplication, QMainWindow
 
@@ -14,9 +13,11 @@ def launch_gui():
     window.show()
 
     result = app.exec()
+    print(window.value)
 
     del window
     del app
+
 
 if __name__ == '__main__':
     launch_gui()
