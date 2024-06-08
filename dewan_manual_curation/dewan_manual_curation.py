@@ -9,7 +9,7 @@ def launch_gui():
     app = QApplication([])
     qdarktheme.setup_theme('dark')
 
-    project_folder = gui.get_project_folder()
+    project_folder = gui.ProjectFolder('/mnt/dev/')
 
     window = gui.ManualCurationUI()
     window.show()

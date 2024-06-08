@@ -3,6 +3,8 @@ from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
 from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 
+from pathlib import Path
+
 
 class ManualCurationUI(QDialog):
     def __init__(self):
@@ -101,19 +103,47 @@ class ManualCurationUI(QDialog):
         self.close()
 
 
-def get_project_folder(override_root=None):
-    root_dir = ""
-    file_names = []
-    if override_root is None:
-        root_dir = override_root
+class ProjectFolder:
+    def __init__(self, root_dir=None):
+        self.root_dir = root_dir
 
-    file_dialog = QFileDialog()
-    file_dialog.setWindowTitle("Select Project Directory:")
-    file_dialog.setFileMode(QFileDialog.FileMode.Directory)
-    file_dialog.setViewMode(QFileDialog.ViewMode.Detail)
-    file_dialog.setDirectory(root_dir)
+        self.project_folder = None
+        self.cell_trace_data = None
+        self.max_projection_image = None
 
-    if file_dialog.exec():
-        file_names = file_dialog.selectedFiles()
+        self.setup_folder()
 
-    return file_names
+    def setup_folder(self):
+        project_folder = self.get_project_folder()[0]
+        temp_folder = Path(project_folder)
+
+        if not temp_folder.exists():
+            raise FileNotFoundError(f'Project folder {project_folder} does not exist')
+        else:
+            self.project_folder = temp_folder
+
+    def get_project_folder(self) -> list[str]:
+        file_names = []
+        root_directory = []
+
+        if self.root_dir is None:
+            root_directory = ""
+        else:
+            path = Path(self.root_dir)
+
+            if not path.exists():
+                print(f"Root path {str(path)} does not exist! Setting root path to default!")
+                root_directory = ""
+            else:
+                root_directory = str(path)
+
+        file_dialog = QFileDialog()
+        file_dialog.setWindowTitle("Select Project Directory:")
+        file_dialog.setFileMode(QFileDialog.FileMode.Directory)
+        file_dialog.setViewMode(QFileDialog.ViewMode.Detail)
+        file_dialog.setDirectory(root_directory)
+
+        if file_dialog.exec():
+            file_names = file_dialog.selectedFiles()
+
+        return file_names
