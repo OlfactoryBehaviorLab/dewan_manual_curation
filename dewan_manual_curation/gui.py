@@ -122,28 +122,52 @@ class ProjectFolder:
         else:
             self.project_folder = temp_folder
 
+        self.get_project_files()
+
     def get_project_folder(self) -> list[str]:
         file_names = []
-        root_directory = []
 
-        if self.root_dir is None:
-            root_directory = ""
+        root_directory = Path(self.root_dir)
+
+        if not root_directory.exists():
+            print(f"Root path {str(root_directory)} does not exist! Setting root path to default!")
+            self.root_dir = ""
         else:
-            path = Path(self.root_dir)
-
-            if not path.exists():
-                print(f"Root path {str(path)} does not exist! Setting root path to default!")
-                root_directory = ""
-            else:
-                root_directory = str(path)
+            self.root_dir = str(root_directory)
 
         file_dialog = QFileDialog()
         file_dialog.setWindowTitle("Select Project Directory:")
         file_dialog.setFileMode(QFileDialog.FileMode.Directory)
         file_dialog.setViewMode(QFileDialog.ViewMode.Detail)
-        file_dialog.setDirectory(root_directory)
+        file_dialog.setDirectory(self.root_dir)
 
         if file_dialog.exec():
             file_names = file_dialog.selectedFiles()
 
         return file_names
+
+    def get_project_files(self):
+        self.max_projection_path = None
+        self.cell_trace_data_path = None
+        self.cell_props_path = None
+
+        self.inscopix_path = self.project_folder.joinpath(*['InscopixProcessing', 'DataAnalysis'])
+
+        if not self.inscopix_path.exists():
+            raise FileNotFoundError(f'Data folder {self.inscopix_path} does not exist!')
+
+        max_projection_path = list(self.inscopix_path.glob('*HD*MAX_PROJ*.tiff'))
+        cell_trace_data_path = list(self.inscopix_path.glob('*TRACES*.csv'))
+        cell_props_path = list(self.inscopix_path.glob('*props*.csv'))
+
+        if len(max_projection_path) == 0:
+            raise FileNotFoundError(f'Max Projection image not found!')
+        elif len(cell_trace_data_path) == 0:
+            raise FileNotFoundError(f'Cell Trace data not found!')
+        elif len(cell_props_path) == 0:
+            raise FileNotFoundError(f'Cell Props data not found!')
+        else:
+            self.max_projection_path = max_projection_path[0]
+            self.cell_trace_data_path = cell_trace_data_path[0]
+            self.cell_props_path = cell_props_path[0]
+
