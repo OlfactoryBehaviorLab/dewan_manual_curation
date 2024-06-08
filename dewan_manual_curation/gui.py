@@ -104,12 +104,21 @@ class ManualCurationUI(QDialog):
 
 
 class ProjectFolder:
-    def __init__(self, root_dir=None):
+    def __init__(self, root_dir=""):
         self.root_dir = root_dir
 
-        self.project_folder = None
+        #  Empty data variables
         self.cell_trace_data = None
         self.max_projection_image = None
+        self.cell_props = None
+
+        #  Empty file/folder paths
+        self.project_folder = None
+        self.max_projection_path = None
+        self.cell_trace_data_path = None
+        self.cell_props_path = None
+        self.inscopix_path = None
+
 
         self.setup_folder()
 
