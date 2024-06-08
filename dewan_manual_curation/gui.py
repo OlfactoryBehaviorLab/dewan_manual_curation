@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
-                               QHBoxLayout, QGroupBox, QFrame, QScrollArea, QSizePolicy)
+                               QHBoxLayout, QGroupBox, QFileDialog, QScrollArea, QSizePolicy)
 from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 
@@ -99,3 +99,21 @@ class ManualCurationUI(QDialog):
     def accept(self):
         self.value = 10
         self.close()
+
+
+def get_project_folder(override_root=None):
+    root_dir = ""
+    file_names = []
+    if override_root is None:
+        root_dir = override_root
+
+    file_dialog = QFileDialog()
+    file_dialog.setWindowTitle("Select Project Directory:")
+    file_dialog.setFileMode(QFileDialog.FileMode.Directory)
+    file_dialog.setViewMode(QFileDialog.ViewMode.Detail)
+    file_dialog.setDirectory(root_dir)
+
+    if file_dialog.exec():
+        file_names = file_dialog.selectedFiles()
+
+    return file_names

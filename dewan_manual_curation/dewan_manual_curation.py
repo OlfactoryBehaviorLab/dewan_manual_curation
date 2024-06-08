@@ -1,7 +1,7 @@
 import qdarktheme
 from PySide6.QtWidgets import QApplication, QMainWindow
 
-from gui import ManualCurationUI
+import gui
 
 
 def launch_gui():
@@ -9,7 +9,9 @@ def launch_gui():
     app = QApplication([])
     qdarktheme.setup_theme('dark')
 
-    window = ManualCurationUI()
+    project_folder = gui.get_project_folder()
+
+    window = gui.ManualCurationUI()
     window.show()
 
     result = app.exec()
