@@ -104,8 +104,9 @@ class ManualCurationUI(QDialog):
 
 
 class ProjectFolder:
-    def __init__(self, root_dir=""):
+    def __init__(self, root_dir="", project_dir=None):
         self.root_dir = root_dir
+        self.project_dir = project_dir
 
         #  Empty data variables
         self.cell_trace_data = None
@@ -123,6 +124,7 @@ class ProjectFolder:
 
     def setup_folder(self):
 
+        #  Check if the root directory exists  #
         root_directory = Path(self.root_dir)
 
         if not root_directory.exists():
@@ -131,13 +133,18 @@ class ProjectFolder:
         else:
             self.root_dir = str(root_directory)
 
-        project_folder = self.get_project_folder()[0]
-        temp_folder = Path(project_folder)
+        if self.project_dir is not None:
+            temp_folder = Path(self.project_dir)
 
-        if not temp_folder.exists():
-            raise FileNotFoundError(f'Project folder {project_folder} does not exist')
+            #  Check if the user-supplied path exists  #
+            if not temp_folder.exists():
+                raise FileNotFoundError(f'Project folder {str(temp_folder)} does not exist')
+            else:
+                self.project_folder = temp_folder
         else:
-            self.project_folder = temp_folder
+            #  Get Project Folder from Selector  #
+            project_folder = self.get_project_folder()[0]
+            self.project_folder = Path(project_folder)
 
         self.get_project_files()
 
