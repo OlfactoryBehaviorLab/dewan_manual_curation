@@ -81,3 +81,15 @@ class ProjectFolder:
             self.cell_trace_data_path = cell_trace_data_path[0]
             self.cell_props_path = cell_props_path[0]
 
+    #  Dunder Methods  #
+    def __str__(self):
+        return f'Project folder: {self.project_folder}'
+
+    def __repr__(self):
+        description = f'{type(self).__name__}(root_directory={self.root_dir}, \n \
+                project_directory={self.project_folder}, \n \
+                inscopix_directory={self.inscopix_path}, \n \
+                max_projection_path={self.max_projection_path}, \n \
+                cell_trace_data_path={self.cell_trace_data_path}, \n \
+                cell_props_path={self.cell_props_path})'
+        return description
