@@ -119,10 +119,18 @@ class ProjectFolder:
         self.cell_props_path = None
         self.inscopix_path = None
 
-
         self.setup_folder()
 
     def setup_folder(self):
+
+        root_directory = Path(self.root_dir)
+
+        if not root_directory.exists():
+            print(f"Root path {str(root_directory)} does not exist! Setting root path to default!")
+            self.root_dir = ""
+        else:
+            self.root_dir = str(root_directory)
+
         project_folder = self.get_project_folder()[0]
         temp_folder = Path(project_folder)
 
@@ -135,14 +143,6 @@ class ProjectFolder:
 
     def get_project_folder(self) -> list[str]:
         file_names = []
-
-        root_directory = Path(self.root_dir)
-
-        if not root_directory.exists():
-            print(f"Root path {str(root_directory)} does not exist! Setting root path to default!")
-            self.root_dir = ""
-        else:
-            self.root_dir = str(root_directory)
 
         file_dialog = QFileDialog()
         file_dialog.setWindowTitle("Select Project Directory:")
