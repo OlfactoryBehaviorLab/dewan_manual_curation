@@ -1,13 +1,16 @@
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
-                               QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy)
-from PySide6.QtGui import QFont
+                               QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy, QGraphicsPixmapItem, QGraphicsView, QGraphicsScene)
+from PySide6.QtGui import QFont, QPixmap, QImage, QBrush
 from PySide6.QtCore import Qt
 
+from project_folder import ProjectFolder
 
 class ManualCurationUI(QDialog):
-    def __init__(self):
+    def __init__(self, project_folder: ProjectFolder):
         super().__init__()
         self.default_font = QFont("Arial", 12)
+        self.project_folder = project_folder
+
 
         #  Cell List Components
         self.cell_scroll_list = None
@@ -29,6 +32,8 @@ class ManualCurationUI(QDialog):
         self.max_projection_box = None
         self.cell_trace_box = None
 
+        self.max_projection_view = None
+
         self.value = []
 
         self.initUI()
@@ -39,6 +44,10 @@ class ManualCurationUI(QDialog):
         self.setFont(self.default_font)
         self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
         self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.max_projection_view.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
 
     def initUI(self):
         self.init_window_params()
@@ -71,6 +80,24 @@ class ManualCurationUI(QDialog):
         self.max_projection_box = QGroupBox("Max Projection")  # Create the max projection box
         self.max_projection_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.max_projection_box.setMinimumSize(300, 300)
+        self.max_projection_layout = QHBoxLayout()
+        self.max_projection_box.setLayout(self.max_projection_layout)
+
+        self.scene = QGraphicsScene()
+        self.max_projection_view = QGraphicsView()
+        self.max_projection_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.max_projection_view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        image = QImage(self.project_folder.max_projection_path)
+        pixmap = QPixmap.fromImage(image)
+        self.pixmap_item = QGraphicsPixmapItem(pixmap)
+        self.scene.addText("Hello World!")
+        self.scene.addItem(self.pixmap_item)
+        self.max_projection_view.setScene(self.scene)
+        self.max_projection_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # self.max_projection_view.setMinimumSize(pixmap.size())
+        # self.max_projection_view.fitInView(self.pixmap_item, Qt.KeepAspectRatio)
+
+        self.max_projection_layout.addWidget(self.max_projection_view)
 
         self.top_half_container.addWidget(self.cell_list_box)
         # Add the list and max projection box to the top half layout
