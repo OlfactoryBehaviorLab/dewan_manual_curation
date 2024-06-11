@@ -10,9 +10,9 @@ def launch_gui():
     app = QApplication([])
     qdarktheme.setup_theme('dark')
 
-    project_folder = ProjectFolder('/mnt/dev/Test_Data', '/mnt/dev/Test_Data/Odor/VGLUT-20')
+    project_folder = ProjectFolder(project_dir='C:/Projects/Test_Data/VGLUT-20')
 
-    window = gui.ManualCurationUI()
+    window = gui.ManualCurationUI(project_folder)
     window.show()
 
     result = app.exec()
