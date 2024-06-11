@@ -1,9 +1,10 @@
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
-                               QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy, QGraphicsPixmapItem, QGraphicsView, QGraphicsScene)
+                               QHBoxLayout, QGroupBox, QAbstractScrollArea, QScrollArea, QSizePolicy, QGraphicsPixmapItem, QGraphicsView, QGraphicsScene)
 from PySide6.QtGui import QFont, QPixmap, QImage, QBrush
 from PySide6.QtCore import Qt
 
 from project_folder import ProjectFolder
+
 
 class ManualCurationUI(QDialog):
     def __init__(self, project_folder: ProjectFolder):
@@ -85,17 +86,18 @@ class ManualCurationUI(QDialog):
 
         self.scene = QGraphicsScene()
         self.max_projection_view = QGraphicsView()
-        self.max_projection_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.max_projection_view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.max_projection_view.setInteractive(True)
+        self.max_projection_view.setDragMode(QGraphicsView.ScrollHandDrag)
+        self.max_projection_view.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContentsOnFirstShow)
         image = QImage(self.project_folder.max_projection_path)
         pixmap = QPixmap.fromImage(image)
         self.pixmap_item = QGraphicsPixmapItem(pixmap)
-        self.scene.addText("Hello World!")
         self.scene.addItem(self.pixmap_item)
-        self.max_projection_view.setScene(self.scene)
+
+
         self.max_projection_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        # self.max_projection_view.setMinimumSize(pixmap.size())
-        # self.max_projection_view.fitInView(self.pixmap_item, Qt.KeepAspectRatio)
+        self.max_projection_view.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
+        self.max_projection_view.setScene(self.scene)
 
         self.max_projection_layout.addWidget(self.max_projection_view)
 
