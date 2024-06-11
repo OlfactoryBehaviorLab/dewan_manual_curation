@@ -1,9 +1,12 @@
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
-                               QHBoxLayout, QGroupBox, QAbstractScrollArea, QScrollArea, QSizePolicy, QGraphicsPixmapItem, QGraphicsView, QGraphicsScene)
-from PySide6.QtGui import QFont, QPixmap, QImage, QBrush
-from PySide6.QtCore import Qt
+                               QHBoxLayout, QGroupBox, QAbstractScrollArea, QScrollArea, QSizePolicy,
+                               QGraphicsPixmapItem, QGraphicsView, QGraphicsScene)
+from PySide6.QtGui import QFont, QPixmap, QImage, QBrush, QWheelEvent
+from PySide6.QtCore import Qt, QTimeLine
 
 from project_folder import ProjectFolder
+
+SCALE_FACTOR = 0.01
 
 
 class ManualCurationUI(QDialog):
@@ -11,7 +14,6 @@ class ManualCurationUI(QDialog):
         super().__init__()
         self.default_font = QFont("Arial", 12)
         self.project_folder = project_folder
-
 
         #  Cell List Components
         self.cell_scroll_list = None
@@ -24,6 +26,7 @@ class ManualCurationUI(QDialog):
         self.bottom_half_layout = None
         self.cell_list_layout = None
         self.cell_list_control_layout = None
+        self.max_projection_layout = None
 
         self.bottom_half_container = None
         self.cell_trace_box_layout = None
@@ -33,11 +36,40 @@ class ManualCurationUI(QDialog):
         self.max_projection_box = None
         self.cell_trace_box = None
 
-        self.max_projection_view = None
+        #  Image View Components
+        self.max_projection_view: QGraphicsView = None
+        self.scene = None
+        self.image = None
+        self.pixmap = None
+        self.pixmap_item = None
+
+        self.scale = 1
+        self.direction = 0
 
         self.value = []
 
         self.initUI()
+
+    def eventFilter(self, obj, event):
+        from PySide6.QtGui import QPaintEvent
+
+        if type(event) is QWheelEvent and obj == self.max_projection_view.viewport():
+            if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                self.zoom_image(event)
+            return True
+        return False
+
+    def zoom_image(self, event: QWheelEvent):
+        num_degrees = event.angleDelta() / 8
+        steps = float(num_degrees.y() / 15)
+
+        if steps != self.direction:
+            self.scale = 1
+            self.direction = steps
+
+        if 0.5 <= self.scale <= 1.5:
+            self.scale += (SCALE_FACTOR * steps)
+            self.max_projection_view.scale(self.scale, self.scale)
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
@@ -47,13 +79,12 @@ class ManualCurationUI(QDialog):
         self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
 
     def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.max_projection_view.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
+        event.accept()
+        self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
+        self.scale = 1
 
     def initUI(self):
         self.init_window_params()
-
-        # Main Layout for GUI
         self.main_layout = QVBoxLayout()
         self.setLayout(self.main_layout)
 
@@ -87,16 +118,22 @@ class ManualCurationUI(QDialog):
         self.scene = QGraphicsScene()
         self.max_projection_view = QGraphicsView()
         self.max_projection_view.setInteractive(True)
+        self.max_projection_view.setMouseTracking(True)
         self.max_projection_view.setDragMode(QGraphicsView.ScrollHandDrag)
-        self.max_projection_view.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContentsOnFirstShow)
-        image = QImage(self.project_folder.max_projection_path)
-        pixmap = QPixmap.fromImage(image)
-        self.pixmap_item = QGraphicsPixmapItem(pixmap)
+        self.max_projection_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.max_projection_view.setResizeAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
+        self.max_projection_view.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
+        self.max_projection_view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.max_projection_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.max_projection_view.viewport().installEventFilter(self)
+        # Main Layout for GUI
+
+        self.image = QImage(self.project_folder.max_projection_path)
+        self.pixmap = QPixmap.fromImage(self.image)
+        self.pixmap_item = QGraphicsPixmapItem(self.pixmap)
         self.scene.addItem(self.pixmap_item)
 
-
-        self.max_projection_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.max_projection_view.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
+        self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
         self.max_projection_view.setScene(self.scene)
 
         self.max_projection_layout.addWidget(self.max_projection_view)
