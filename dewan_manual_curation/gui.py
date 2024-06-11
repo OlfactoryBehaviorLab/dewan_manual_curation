@@ -72,6 +72,19 @@ class ManualCurationUI(QDialog):
             return True
         return False
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_R:
+            print("Reset Image")
+            self.reset_image_zoom()
+        if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
+            print('Control')
+            if event.key() == Qt.Key.Key_Equal:
+                print('Zoom In')
+                self.zoom_image_in()
+            elif event.key() == Qt.Key.Key_Minus:
+                print('Zoom Out')
+                self.zoom_image_out()
+
     def zoom_image(self, steps: int):
 
         if steps != self.direction:
@@ -81,7 +94,6 @@ class ManualCurationUI(QDialog):
         if 0.5 <= self.scale <= 1.5:
             self.scale += (SCALE_FACTOR * steps)
             self.max_projection_view.scale(self.scale, self.scale)
-            print(self.scale)
 
     def reset_image_zoom(self):
         self.scale = 1
@@ -148,7 +160,6 @@ class ManualCurationUI(QDialog):
         self.zoom_in.clicked.connect(self.zoom_image_in)
         self.zoom_out.clicked.connect(self.zoom_image_out)
         self.zoom_reset.clicked.connect(self.reset_image_zoom)
-
 
         self.max_projection_controls.addWidget(self.zoom_in)
         self.max_projection_controls.addWidget(self.zoom_out)
