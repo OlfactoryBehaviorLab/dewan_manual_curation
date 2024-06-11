@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QAbstractScrollArea, QScrollArea, QSizePolicy,
                                QGraphicsPixmapItem, QGraphicsView, QGraphicsScene)
-from PySide6.QtGui import QFont, QPixmap, QImage, QBrush, QWheelEvent
-from PySide6.QtCore import Qt, QTimeLine
+from PySide6.QtGui import QFont, QPixmap, QImage, QBrush, QWheelEvent, QShowEvent
+from PySide6.QtCore import Qt, QMarginsF
 
 from project_folder import ProjectFolder
 
@@ -12,6 +12,7 @@ SCALE_FACTOR = 0.01
 class ManualCurationUI(QDialog):
     def __init__(self, project_folder: ProjectFolder):
         super().__init__()
+
         self.default_font = QFont("Arial", 12)
         self.project_folder = project_folder
 
@@ -27,6 +28,7 @@ class ManualCurationUI(QDialog):
         self.cell_list_layout = None
         self.cell_list_control_layout = None
         self.max_projection_layout = None
+        self.max_projection_controls = None
 
         self.bottom_half_container = None
         self.cell_trace_box_layout = None
@@ -35,6 +37,12 @@ class ManualCurationUI(QDialog):
         self.cell_list_box = None
         self.max_projection_box = None
         self.cell_trace_box = None
+
+        #  Max Projection Controls
+        self.zoom_in = None
+        self.zoom_out = None
+        self.zoom_reset = None
+
 
         #  Image View Components
         self.max_projection_view: QGraphicsView = None
@@ -51,17 +59,20 @@ class ManualCurationUI(QDialog):
         self.initUI()
 
     def eventFilter(self, obj, event):
-        from PySide6.QtGui import QPaintEvent
-
-        if type(event) is QWheelEvent and obj == self.max_projection_view.viewport():
+        if type(event) is QWheelEvent:
             if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
-                self.zoom_image(event)
+
+                num_degrees = event.angleDelta() / 8
+                steps = int(num_degrees.y() / 15)
+
+                self.zoom_image(steps)
+            return True
+        elif type(event) is QShowEvent:
+            self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
             return True
         return False
 
-    def zoom_image(self, event: QWheelEvent):
-        num_degrees = event.angleDelta() / 8
-        steps = float(num_degrees.y() / 15)
+    def zoom_image(self, steps: int):
 
         if steps != self.direction:
             self.scale = 1
@@ -70,6 +81,17 @@ class ManualCurationUI(QDialog):
         if 0.5 <= self.scale <= 1.5:
             self.scale += (SCALE_FACTOR * steps)
             self.max_projection_view.scale(self.scale, self.scale)
+            print(self.scale)
+
+    def reset_image_zoom(self):
+        self.scale = 1
+        self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
+
+    def zoom_image_in(self):
+        self.zoom_image(1)
+
+    def zoom_image_out(self):
+        self.zoom_image(-1)
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
@@ -80,11 +102,14 @@ class ManualCurationUI(QDialog):
 
     def resizeEvent(self, event):
         event.accept()
-        self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
-        self.scale = 1
+        if self.scale == 1:
+            self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
+            self.scale = 1
 
     def initUI(self):
         self.init_window_params()
+
+        # Main Layout for GUI
         self.main_layout = QVBoxLayout()
         self.setLayout(self.main_layout)
 
@@ -115,6 +140,21 @@ class ManualCurationUI(QDialog):
         self.max_projection_layout = QHBoxLayout()
         self.max_projection_box.setLayout(self.max_projection_layout)
 
+        self.max_projection_controls = QVBoxLayout()
+        self.max_projection_controls.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.zoom_in = QPushButton("+")
+        self.zoom_out = QPushButton("-")
+        self.zoom_reset = QPushButton("R")
+        self.zoom_in.clicked.connect(self.zoom_image_in)
+        self.zoom_out.clicked.connect(self.zoom_image_out)
+        self.zoom_reset.clicked.connect(self.reset_image_zoom)
+
+
+        self.max_projection_controls.addWidget(self.zoom_in)
+        self.max_projection_controls.addWidget(self.zoom_out)
+        self.max_projection_controls.addWidget(self.zoom_reset)
+        self.max_projection_layout.addLayout(self.max_projection_controls)
+
         self.scene = QGraphicsScene()
         self.max_projection_view = QGraphicsView()
         self.max_projection_view.setInteractive(True)
@@ -126,19 +166,16 @@ class ManualCurationUI(QDialog):
         self.max_projection_view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.max_projection_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.max_projection_view.viewport().installEventFilter(self)
-        # Main Layout for GUI
 
         self.image = QImage(self.project_folder.max_projection_path)
         self.pixmap = QPixmap.fromImage(self.image)
         self.pixmap_item = QGraphicsPixmapItem(self.pixmap)
         self.scene.addItem(self.pixmap_item)
-
-        self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
         self.max_projection_view.setScene(self.scene)
 
         self.max_projection_layout.addWidget(self.max_projection_view)
-
         self.top_half_container.addWidget(self.cell_list_box)
+
         # Add the list and max projection box to the top half layout
         self.top_half_container.addWidget(self.max_projection_box)
         self.main_layout.addLayout(self.top_half_container)
