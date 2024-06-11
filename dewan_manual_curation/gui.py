@@ -10,12 +10,12 @@ SCALE_FACTOR = 0.01
 
 
 class ManualCurationUI(QDialog):
-    def __init__(self, project_folder: ProjectFolder):
+    def __init__(self, project_folder: ProjectFolder, cell_names):
         super().__init__()
 
         self.default_font = QFont("Arial", 12)
         self.project_folder = project_folder
-
+        self.cells = cell_names
         #  Cell List Components
         self.cell_scroll_list = None
         self.select_all_button = None
@@ -58,6 +58,7 @@ class ManualCurationUI(QDialog):
 
         self.initUI()
 
+    #  Function Overloads
     def eventFilter(self, obj, event):
         if type(event) is QWheelEvent:
             if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
@@ -69,31 +70,32 @@ class ManualCurationUI(QDialog):
             return True
         elif type(event) is QShowEvent:
             self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
-            return True
+            return False  # We don't actually wanna handle this event, just needed to run this with it
         return False
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_R:
-            print("Reset Image")
             self.reset_image_zoom()
         if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
-            print('Control')
             if event.key() == Qt.Key.Key_Equal:
-                print('Zoom In')
                 self.zoom_image_in()
             elif event.key() == Qt.Key.Key_Minus:
-                print('Zoom Out')
                 self.zoom_image_out()
 
-    def zoom_image(self, steps: int):
+    def resizeEvent(self, event):
+        event.accept()
+        if self.scale == 1:
+            self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
+            self.scale = 1
 
+    #  Class Functions
+    def zoom_image(self, steps: int):
         if steps != self.direction:
             self.scale = 1
             self.direction = steps
 
-        if 0.5 <= self.scale <= 1.5:
-            self.scale += (SCALE_FACTOR * steps)
-            self.max_projection_view.scale(self.scale, self.scale)
+        self.scale += (SCALE_FACTOR * steps)
+        self.max_projection_view.scale(self.scale, self.scale)
 
     def reset_image_zoom(self):
         self.scale = 1
@@ -111,12 +113,6 @@ class ManualCurationUI(QDialog):
         self.setFont(self.default_font)
         self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
         self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
-
-    def resizeEvent(self, event):
-        event.accept()
-        if self.scale == 1:
-            self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
-            self.scale = 1
 
     def initUI(self):
         self.init_window_params()
