@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QAbstractScrollArea, QScrollArea, QSizePolicy,
-                               QGraphicsPixmapItem, QGraphicsView, QGraphicsScene)
+                               QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget)
 from PySide6.QtGui import QFont, QPixmap, QImage, QBrush, QWheelEvent, QShowEvent
 from PySide6.QtCore import Qt, QMarginsF
 
@@ -17,9 +17,12 @@ class ManualCurationUI(QDialog):
         self.project_folder = project_folder
         self.cells = cell_names
         #  Cell List Components
-        self.cell_scroll_list = None
+        self.cell_scroll_area = None
+        self.cell_list = None
         self.select_all_button = None
         self.select_none_button = None
+        self.cell_selection_checkbox_list = None
+        self.cell_view_checkbox_list = None
 
         #  Layouts
         self.main_layout = None
@@ -27,6 +30,7 @@ class ManualCurationUI(QDialog):
         self.bottom_half_layout = None
         self.cell_list_layout = None
         self.cell_list_control_layout = None
+        self.cell_checkbox_select_layout = None
         self.max_projection_layout = None
         self.max_projection_controls = None
 
@@ -45,7 +49,7 @@ class ManualCurationUI(QDialog):
 
 
         #  Image View Components
-        self.max_projection_view: QGraphicsView = None
+        self.max_projection_view = None
         self.scene = None
         self.image = None
         self.pixmap = None
@@ -107,6 +111,30 @@ class ManualCurationUI(QDialog):
     def zoom_image_out(self):
         self.zoom_image(-1)
 
+    def select_none(self):
+        for checkbox in self.cell_selection_checkbox_list:
+            checkbox.setCheckState(Qt.CheckState.Unchecked)
+
+    def select_all(self):
+        for checkbox in self.cell_selection_checkbox_list:
+            checkbox.setCheckState(Qt.CheckState.Checked)
+
+    def fill_checkbox_lists(self):
+        self.cell_selection_checkbox_list = []
+        self.cell_view_checkbox_list = []
+
+        for each in self.cells:
+            selection_CB = QCheckBox(str(each))
+            selection_CB.setCheckState(Qt.CheckState.Checked)
+
+            view_CB = QCheckBox(str(each))
+            view_CB.setCheckState(Qt.CheckState.Checked)
+            self.cell_selection_checkbox_list.append(selection_CB)
+            self.cell_view_checkbox_list.append(view_CB)
+
+            self.cell_checkbox_select_layout.addWidget(selection_CB)
+            # self.cell_checkbox_view_layout.addWidget(view_CB)
+
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
@@ -129,18 +157,27 @@ class ManualCurationUI(QDialog):
         self.cell_list_layout = QVBoxLayout()
         self.cell_list_box.setLayout(self.cell_list_layout)
 
-        self.cell_scroll_list = QScrollArea()  # Add the scroll area to the layout
-        self.cell_list_layout.addWidget(self.cell_scroll_list)
+        self.cell_list = QWidget()
+        self.cell_checkbox_select_layout = QVBoxLayout(self.cell_list)
+        self.fill_checkbox_lists()
+
+        self.cell_scroll_area = QScrollArea()  # Add the scroll area to the layout
+        self.cell_scroll_area.setWidget(self.cell_list)
+        self.cell_list_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.cell_list_layout.addWidget(self.cell_scroll_area)
 
         self.cell_list_control_layout = QHBoxLayout()  # Add the two buttons to a layout
         self.select_all_button = QPushButton(u"Select All")
         self.select_all_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.select_all_button.clicked.connect(self.select_all)
         self.select_none_button = QPushButton(u"Select None")
+        self.select_none_button.clicked.connect(self.select_none)
         self.select_none_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.cell_list_control_layout.addWidget(self.select_all_button)
         self.cell_list_control_layout.addWidget(self.select_none_button)
 
         self.cell_list_layout.addLayout(self.cell_list_control_layout)  # Add the control area to the list layout
+        self.top_half_container.addWidget(self.cell_list_box)
 
         self.max_projection_box = QGroupBox("Max Projection")  # Create the max projection box
         self.max_projection_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -181,7 +218,7 @@ class ManualCurationUI(QDialog):
         self.max_projection_view.setScene(self.scene)
 
         self.max_projection_layout.addWidget(self.max_projection_view)
-        self.top_half_container.addWidget(self.cell_list_box)
+
 
         # Add the list and max projection box to the top half layout
         self.top_half_container.addWidget(self.max_projection_box)
