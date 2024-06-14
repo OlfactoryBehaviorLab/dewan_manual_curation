@@ -26,6 +26,9 @@ class ManualCurationUI(QDialog):
         # Cell View List Components
         self.cell_view_list = None
         self.cell_view_scroll_area = None
+        # Cell Trace List Components
+        self.cell_trace_scroll_area_contents = None
+        self.cell_trace_scroll_area = None
         #  Layouts
         self.main_layout = None
         self.top_half_container = None
@@ -38,6 +41,7 @@ class ManualCurationUI(QDialog):
         self.cell_view_checkbox_layout = None
         self.bottom_half_container = None
         self.cell_trace_box_layout = None
+        self.cell_trace_layout = None
         #  Group Boxes
         self.cell_list_box = None
         self.max_projection_box = None
@@ -246,9 +250,17 @@ class ManualCurationUI(QDialog):
         self.cell_view_scroll_area.setMaximumWidth(250)
         self.cell_view_scroll_area.setWidget(self.cell_view_list)
         self.cell_trace_box_layout.addWidget(self.cell_view_scroll_area)
-        self.bottom_half_container.addWidget(self.cell_trace_box)
-        
 
+        # ==Cell Trace View== #
+        self.cell_trace_scroll_area_contents = QWidget()
+        self.cell_trace_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
+
+        self.cell_trace_scroll_area = QScrollArea()
+        self.cell_trace_scroll_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.cell_trace_scroll_area.setWidget(self.cell_trace_scroll_area_contents)
+        self.cell_trace_box_layout.addWidget(self.cell_trace_scroll_area)
+
+        self.bottom_half_container.addWidget(self.cell_trace_box)
         self.main_layout.addLayout(self.bottom_half_container)
 
     def closeEvent(self, e):
