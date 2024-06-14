@@ -144,13 +144,15 @@ class ManualCurationUI(QDialog):
     def initUI(self):
         self.init_window_params()
 
-        # Main Layout for GUI
+        # ==MAIN LAYOUT== #
         self.main_layout = QVBoxLayout()
         self.setLayout(self.main_layout)
 
+        # ==TOP HALF== #
         self.top_half_container = QHBoxLayout()  # Holds the cell list and max projection
 
-        self.cell_list_box = QGroupBox("Cells")  # Box for cell scroll area and buttons
+        # ==Cell Selection List== #
+        self.cell_list_box = QGroupBox("Cells")
         self.cell_list_box.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.cell_list_box.setMaximumWidth(250)
         self.cell_list_layout = QVBoxLayout()
@@ -164,6 +166,7 @@ class ManualCurationUI(QDialog):
         self.cell_scroll_area.setWidget(self.cell_list)
         self.cell_list_layout.addWidget(self.cell_scroll_area)
 
+        # ==Cell Selection List Controls== #
         self.cell_list_control_layout = QHBoxLayout()  # Add the two buttons to a layout
         self.select_all_button = QPushButton(u"Select All")
         self.select_all_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -173,10 +176,11 @@ class ManualCurationUI(QDialog):
         self.select_none_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.cell_list_control_layout.addWidget(self.select_all_button)
         self.cell_list_control_layout.addWidget(self.select_none_button)
+        self.cell_list_layout.addLayout(self.cell_list_control_layout)
 
-        self.cell_list_layout.addLayout(self.cell_list_control_layout)  # Add the control area to the list layout
-        self.top_half_container.addWidget(self.cell_list_box)
+        self.top_half_container.addWidget(self.cell_list_box) # Cell list to top half
 
+        # ==Maximum Projection View== #
         self.max_projection_box = QGroupBox("Max Projection")  # Create the max projection box
         self.max_projection_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.max_projection_box.setMinimumSize(300, 300)
@@ -197,6 +201,7 @@ class ManualCurationUI(QDialog):
         self.max_projection_controls.addWidget(self.zoom_reset)
         self.max_projection_layout.addLayout(self.max_projection_controls)
 
+        # ==Max Projection Display== #
         self.scene = QGraphicsScene()
         self.max_projection_view = QGraphicsView()
         self.max_projection_view.setInteractive(True)
@@ -221,8 +226,10 @@ class ManualCurationUI(QDialog):
         self.top_half_container.addWidget(self.max_projection_box)
         self.main_layout.addLayout(self.top_half_container)
 
+        # ==BOTTOM HALF== #
         self.bottom_half_container = QHBoxLayout()  # Layout for the bottom half of the GUI
 
+        # ==CELL TRACE REGION== #
         self.cell_trace_box = QGroupBox("Traces")  # Create the cell trace box and add it to the layout
         self.cell_trace_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.cell_trace_box.setMinimumHeight(200)
@@ -230,6 +237,7 @@ class ManualCurationUI(QDialog):
         self.cell_trace_box_layout = QHBoxLayout()
         self.cell_trace_box.setLayout(self.cell_trace_box_layout)
 
+        # ==Cell View List== #
         self.cell_view_list = QWidget()
         self.cell_view_checkbox_layout = QVBoxLayout(self.cell_view_list)
         self.populate_view_list()
@@ -237,10 +245,10 @@ class ManualCurationUI(QDialog):
         self.cell_view_scroll_area = QScrollArea()
         self.cell_view_scroll_area.setMaximumWidth(250)
         self.cell_view_scroll_area.setWidget(self.cell_view_list)
-
         self.cell_trace_box_layout.addWidget(self.cell_view_scroll_area)
-
         self.bottom_half_container.addWidget(self.cell_trace_box)
+        
+
         self.main_layout.addLayout(self.bottom_half_container)
 
     def closeEvent(self, e):
