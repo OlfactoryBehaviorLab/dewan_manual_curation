@@ -99,12 +99,14 @@ class CellTrace(FigureCanvasQT):
 
 
 class ManualCurationUI(QDialog):
-    def __init__(self, project_folder: ProjectFolder, cell_names):
+    def __init__(self, project_folder: ProjectFolder, cell_names, cell_traces):
 
         super().__init__()
         self.default_font = QFont("Arial", 12)
         self.project_folder = project_folder
         self.cells = cell_names
+        self.cell_traces = cell_traces
+
         #  Cell Selection List Components
         self.cell_scroll_area = None
         self.cell_list = None
@@ -130,7 +132,7 @@ class ManualCurationUI(QDialog):
         self.cell_view_checkbox_layout = None
         self.bottom_half_container = None
         self.cell_trace_box_layout = None
-        self.cell_trace_layout = None
+        self.cell_trace_contents_layout = None
         #  Group Boxes
         self.cell_list_box = None
         self.max_projection_box = None
@@ -182,7 +184,7 @@ class ManualCurationUI(QDialog):
             self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
             self.scale = 1
 
-    #  Class Functions
+    # ===Class Functions=== #
     def zoom_image(self, steps: int):
         if steps != self.direction:
             self.scale = 1
@@ -226,6 +228,10 @@ class ManualCurationUI(QDialog):
             view_CB.setCheckState(Qt.CheckState.Checked)
             self.cell_view_checkbox_list.append(view_CB)
             self.cell_view_checkbox_layout.addWidget(view_CB)
+
+    def populate_cell_traces(self):
+        for each in self.cell_traces:
+            self.cell_trace_contents_layout.addWidget(each)
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
@@ -342,7 +348,8 @@ class ManualCurationUI(QDialog):
 
         # ==Cell Trace View== #
         self.cell_trace_scroll_area_contents = QWidget()
-        self.cell_trace_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
+        self.cell_trace_contents_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
+        self.populate_cell_traces()
 
         self.cell_trace_scroll_area = QScrollArea()
         self.cell_trace_scroll_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
