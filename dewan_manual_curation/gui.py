@@ -31,7 +31,7 @@ class CellTrace(FigureCanvasQT):
         self.dpi = dpi
 
         self.figure = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = self.figure.subplots(111)
+        self.axes = self.figure.add_subplot(111)
         super().__init__(self.figure)
 
         self.trace_name = None
@@ -40,20 +40,48 @@ class CellTrace(FigureCanvasQT):
 
         self.trace_name = cell_name
 
-        ymin_label = str(trace_data.min())  # We want the original max/min to display alongside the z-scored data
-        ymax_label = str(trace_data.max())
+        ymin_label = round(trace_data.min(), 4)  # We want the original max/min to display alongside the z-scored data
+        ymax_label = round(trace_data.max(), 4)
 
         data_2_plot = self._scale_data(trace_data)
-        x_values = np.arange(len(self.data_2_plot))  # Quicker than list(range(x))
-        self.axes.plot(x_values, data_2_plot)
+        x_values = np.arange(len(data_2_plot))  # Quicker than list(range(x))
+        self.axes.plot(x_values, data_2_plot, color='k', linewidth=0.1)
 
+        # ==CHANGE APPEARANCE== #
 
+        largest_x = x_values[-1]
 
+        xaxis_offset = largest_x * 0.01
 
+        x_minlim = -xaxis_offset
+        x_maxlim = largest_x + xaxis_offset
+        self.axes.set_xlim([-xaxis_offset, (x_values[-1] + xaxis_offset)])
+        self.axes.set_ylim([0, 1])  # y-values will always be [0, 1]
+        y_line_val = np.mean(data_2_plot)
+        self.axes.hlines(y=y_line_val, xmin=x_minlim, xmax=x_maxlim, linestyles=(0, (5, 10)), colors='magenta')
 
-    def _scale_data(self, trace_data: pd.Series):
-        ## TODO: I will need to rework this for a pandas Series
-        scaler = MinMaxScaler(feature_range=(0, 1))
+        self.axes.tick_params(axis='both', which='both', left=False, bottom=False)
+        self.axes.set_xticks([], labels=[])
+        self.axes.set_yticks([-1, 1], labels=[ymin_label, ymax_label])
+
+        self.axes.get_yaxis().set_label_coords(-0.1, 0.5)  # Align all the things
+        self.axes.yaxis.tick_right()
+
+        self.axes.set_ylabel(f'Cell: {self.trace_name}', rotation=0, va='center', ha='center')
+
+        self._set_trace_sizing()  # Reset sizing after plotting
+
+    def _set_trace_sizing(self):
+        self.setMinimumSize(0, self.get_width_height()[1])
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum))
+
+    @staticmethod
+    def _scale_data(trace_data: pd.Series, feature_range=(0, 1)):
+
+        _min, _max = feature_range
+
+        # TODO: I will need to rework this for a pandas Series
+        scaler = MinMaxScaler(feature_range=(_min, _max))
         scaled_data = scaler.fit_transform(trace_data.reshape(-1, 1)).ravel()
 
         return scaled_data
