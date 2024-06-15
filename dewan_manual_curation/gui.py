@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
 
 from sklearn.preprocessing import MinMaxScaler
 
-from project_folder import ProjectFolder
+from .project_folder import ProjectFolder
 
 SCALE_FACTOR = 0.01
 
