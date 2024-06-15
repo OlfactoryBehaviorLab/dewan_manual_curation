@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib as mpl
 
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import FigureCanvasQT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent
@@ -23,12 +23,10 @@ mpl.rcParams['font.weight'] = 'bold'
 mpl.rcParams['font.size'] = 14
 
 
-class CellTrace(FigureCanvasQT):
+class CellTrace(FigureCanvasQTAgg):
     def __init__(self, parent=None, width=30, height=1.1, dpi=100, figure_min_max=(0, 1), reference_line=False,
                  reference_line_color='r'):
         self.parent = parent
-        self.width = width
-        self.height = height
         self.dpi = dpi
 
         self.figure_min_max = figure_min_max
