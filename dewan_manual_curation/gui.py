@@ -24,11 +24,17 @@ mpl.rcParams['font.size'] = 14
 
 
 class CellTrace(FigureCanvasQT):
-    def __init__(self, parent=None, width=30, height=1.1, dpi=100):
+    def __init__(self, parent=None, width=30, height=1.1, dpi=100, figure_min_max=(0, 1), reference_line=False,
+                 reference_line_color='r'):
         self.parent = parent
         self.width = width
         self.height = height
         self.dpi = dpi
+
+        self.figure_min_max = figure_min_max
+        self.reference_line = reference_line
+        self.reference_line_color = reference_line_color
+        self.reference_line_color = reference_line_color
 
         self.figure = Figure(figsize=(width, height), dpi=dpi)
         self.axes = self.figure.add_subplot(111)
@@ -43,7 +49,7 @@ class CellTrace(FigureCanvasQT):
         ymin_label = round(trace_data.min(), 4)  # We want the original max/min to display alongside the z-scored data
         ymax_label = round(trace_data.max(), 4)
 
-        data_2_plot = self._scale_data(trace_data)
+        data_2_plot = self._scale_data(trace_data, self.figure_min_max)
         x_values = np.arange(len(data_2_plot))  # Quicker than list(range(x))
         self.axes.plot(x_values, data_2_plot, color='k', linewidth=0.1)
 
@@ -58,11 +64,13 @@ class CellTrace(FigureCanvasQT):
         self.axes.set_xlim([-xaxis_offset, (x_values[-1] + xaxis_offset)])
         self.axes.set_ylim([0, 1])  # y-values will always be [0, 1]
         y_line_val = np.mean(data_2_plot)
-        self.axes.hlines(y=y_line_val, xmin=x_minlim, xmax=x_maxlim, linestyles=(0, (5, 10)), colors='magenta')
+        if self.reference_line:
+            self.axes.hlines(y=y_line_val, xmin=x_minlim, xmax=x_maxlim,
+                             linestyles=(0, (5, 10)), colors=self.reference_line_color)
 
         self.axes.tick_params(axis='both', which='both', left=False, bottom=False)
         self.axes.set_xticks([], labels=[])
-        self.axes.set_yticks([-1, 1], labels=[ymin_label, ymax_label])
+        self.axes.set_yticks([0, 1], labels=[ymin_label, ymax_label])
 
         self.axes.get_yaxis().set_label_coords(-0.1, 0.5)  # Align all the things
         self.axes.yaxis.tick_right()
@@ -76,7 +84,7 @@ class CellTrace(FigureCanvasQT):
         self.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum))
 
     @staticmethod
-    def _scale_data(trace_data: pd.Series, feature_range=(0, 1)):
+    def _scale_data(trace_data: pd.Series, feature_range: tuple):
 
         _min, _max = feature_range
 
