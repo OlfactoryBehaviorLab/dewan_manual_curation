@@ -4,9 +4,22 @@ from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
 from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent
 from PySide6.QtCore import Qt
 
+from matplotlib.backends.backend_qt import FigureCanvasQT
+from matplotlib.figure import Figure
+
 from project_folder import ProjectFolder
 
 SCALE_FACTOR = 0.01
+
+
+class CellTrace(FigureCanvasQT):
+    def __init__(self, parent=None, width=30, height=1.1, dpi=100):
+        self.parent = parent
+        self.figure = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = self.figure.subplots(111)
+        super().__init__(self.figure)
+
+
 
 
 class ManualCurationUI(QDialog):
