@@ -11,15 +11,46 @@ from project_folder import ProjectFolder
 
 SCALE_FACTOR = 0.01
 
+# Let's set the default font to be Arial Bold 14pt
+mpl.rcParams['font.family'] = 'arial'
+mpl.rcParams['font.weight'] = 'bold'
+mpl.rcParams['font.size'] = 14
+
 
 class CellTrace(FigureCanvasQT):
     def __init__(self, parent=None, width=30, height=1.1, dpi=100):
         self.parent = parent
+        self.width = width
+        self.height = height
+        self.dpi = dpi
+
         self.figure = Figure(figsize=(width, height), dpi=dpi)
         self.axes = self.figure.subplots(111)
         super().__init__(self.figure)
 
+        self.trace_name = None
 
+    def plot_trace(self, trace_data: pd.Series, cell_name):
+
+        self.trace_name = cell_name
+
+        ymin_label = str(trace_data.min())  # We want the original max/min to display alongside the z-scored data
+        ymax_label = str(trace_data.max())
+
+        data_2_plot = self._scale_data(trace_data)
+        x_values = np.arange(len(self.data_2_plot))  # Quicker than list(range(x))
+        self.axes.plot(x_values, data_2_plot)
+
+
+
+
+
+    def _scale_data(self, trace_data: pd.Series):
+        ## TODO: I will need to rework this for a pandas Series
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        scaled_data = scaler.fit_transform(trace_data.reshape(-1, 1)).ravel()
+
+        return scaled_data
 
 
 class ManualCurationUI(QDialog):
