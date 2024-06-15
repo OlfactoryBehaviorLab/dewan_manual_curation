@@ -72,8 +72,9 @@ class CellTrace(FigureCanvasQTAgg):
         self._set_trace_sizing()  # Reset sizing after plotting
 
     def _set_trace_sizing(self):
-        self.setMinimumSize(0, self.get_width_height()[1])
-        self.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum))
+        width, height = self.get_width_height()
+        self.setMinimumSize(-1, height)
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
 
     @staticmethod
     def _scale_data(trace_data: pd.Series, feature_range: tuple):
