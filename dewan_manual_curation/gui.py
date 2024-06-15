@@ -40,7 +40,10 @@ class CellTrace(FigureCanvasQT):
         self.axes = self.figure.add_subplot(111)
         super().__init__(self.figure)
 
-        self.trace_name = None
+        self.trace_name = 'No_Cell_Present'
+
+    def __str__(self):
+        return f'Manual Curation Trace {{Cell: {self.trace_name}}}'
 
     def plot_trace(self, trace_data: pd.Series, cell_name):
 
