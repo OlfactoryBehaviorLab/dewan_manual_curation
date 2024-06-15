@@ -1,11 +1,17 @@
+import numpy as np
+import pandas as pd
+import matplotlib as mpl
+
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt import FigureCanvasQT
+
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget)
-from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent
-from PySide6.QtCore import Qt
 
-from matplotlib.backends.backend_qt import FigureCanvasQT
-from matplotlib.figure import Figure
+from sklearn.preprocessing import MinMaxScaler
 
 from project_folder import ProjectFolder
 
