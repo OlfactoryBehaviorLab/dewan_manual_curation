@@ -136,7 +136,7 @@ class ManualCurationUI(QDialog):
         for checkbox in self.cell_view_checkbox_list:
             checkbox.setCheckState(check_state)
 
-    # ==Button Callbacks== #
+    # ==Callbacks== #
 
     def select_none(self):
         for checkbox in self.cell_selection_checkbox_list:
@@ -158,6 +158,9 @@ class ManualCurationUI(QDialog):
         self.change_view_checkboxes()
         for trace in self.trace_pointers:
             trace.setHidden(True)
+
+    def on_checkbox_change(self, event, cell):
+        print(event, cell)
 
 
     def initUI(self):
@@ -308,11 +311,13 @@ class ManualCurationUI(QDialog):
             self.cell_select_checkbox_layout.addWidget(selection_CB)
 
     def populate_view_list(self):
+        from functools import partial
         self.cell_view_checkbox_list = []
 
         for each in self.cells:
             view_CB = QCheckBox(str(each))
             view_CB.setCheckState(Qt.CheckState.Checked)
+            view_CB.stateChanged.connect(partial(self.on_checkbox_change, each))
             self.cell_view_checkbox_list.append(view_CB)
             self.cell_view_checkbox_layout.addWidget(view_CB)
 
