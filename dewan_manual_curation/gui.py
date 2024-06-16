@@ -121,6 +121,15 @@ class ManualCurationUI(QDialog):
     def zoom_image_out(self):
         self.zoom_image(-1)
 
+    def get_trace_pointers(self):
+        self.trace_pointers = []
+
+        for trace in range(self.cell_trace_scroll_area.count()):
+            _trace = self.cell_trace_scroll_area.item(trace)
+            self.trace_pointers.append(_trace)
+
+    # ==Button Callbacks== #
+
     def select_none(self):
         for checkbox in self.cell_selection_checkbox_list:
             checkbox.setCheckState(Qt.CheckState.Unchecked)
