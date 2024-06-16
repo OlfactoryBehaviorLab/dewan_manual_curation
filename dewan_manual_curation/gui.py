@@ -30,6 +30,8 @@ class ManualCurationUI(QDialog):
         # Cell View List Components
         self.cell_view_list = None
         self.cell_view_scroll_area = None
+        self.view_all_button = None
+        self.view_none_button = None
         # Cell Trace List Components
         self.cell_trace_scroll_area_contents = None
         self.cell_trace_scroll_area = None
@@ -46,6 +48,8 @@ class ManualCurationUI(QDialog):
         self.bottom_half_container = None
         self.cell_trace_box_layout = None
         self.cell_trace_contents_layout = None
+        self.cell_view_layout = None
+        self.cell_view_controls_layout = None
         #  Group Boxes
         self.cell_list_box = None
         self.max_projection_box = None
@@ -127,37 +131,11 @@ class ManualCurationUI(QDialog):
     def export_cells(self):
         print(self.value)
 
-    def populate_selection_list(self):
-        self.cell_selection_checkbox_list = []
+    def view_all(self):
+        pass
 
-        for each in self.cells:
-            selection_CB = QCheckBox(str(each))
-            selection_CB.setCheckState(Qt.CheckState.Checked)
-            self.cell_selection_checkbox_list.append(selection_CB)
-            self.cell_select_checkbox_layout.addWidget(selection_CB)
-
-    def populate_view_list(self):
-        self.cell_view_checkbox_list = []
-
-        for each in self.cells:
-            view_CB = QCheckBox(str(each))
-            view_CB.setCheckState(Qt.CheckState.Checked)
-            self.cell_view_checkbox_list.append(view_CB)
-            self.cell_view_checkbox_layout.addWidget(view_CB)
-
-    def populate_cell_traces(self):
-        for each in self.cell_traces:
-            _list_widget = QListWidgetItem()
-            _list_widget.setSizeHint(QSize(each.width()/3, each.height()))
-            self.cell_trace_scroll_area.addItem(_list_widget)
-            self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
-
-    def init_window_params(self):
-        self.setWindowTitle('Dewan Manual Curation')
-        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.setFont(self.default_font)
-        self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
-        self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
+    def view_none(self):
+        pass
 
     def initUI(self):
         self.init_window_params()
@@ -260,7 +238,7 @@ class ManualCurationUI(QDialog):
         self.cell_trace_box.setLayout(self.cell_trace_box_layout)
 
         # ==Cell View List== #
-        self.cell_view_list_layout = QVBoxLayout()
+        self.cell_view_layout = QVBoxLayout()
 
         self.cell_view_list = QWidget()
         self.cell_view_checkbox_layout = QVBoxLayout(self.cell_view_list)
@@ -274,34 +252,59 @@ class ManualCurationUI(QDialog):
         self.cell_view_controls_layout = QHBoxLayout()
         self.view_all_button = QPushButton(u'View All')
         self.view_none_button = QPushButton(u'View None')
-
+        self.view_all_button.clicked.connect(self.view_all)
+        self.view_none_button.clicked.connect(self.view_none)
         self.cell_view_controls_layout.addWidget(self.view_all_button)
         self.cell_view_controls_layout.addWidget(self.view_none_button)
 
-        self.cell_view_list_layout.addWidget(self.cell_view_scroll_area)
-        self.cell_view_list_layout.addLayout(self.cell_view_controls_layout)
-        self.cell_trace_box_layout.addLayout(self.cell_view_list_layout)
-        # ==Cell Trace View== #
-        # self.cell_trace_scroll_area_contents = QWidget()
-        # self.cell_trace_contents_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
-        #
-        # self.populate_cell_traces()
-        #
-        # self.cell_trace_scroll_area = QScrollArea()
-        # self.cell_trace_scroll_area.setWidgetResizable(True)
-        # self.cell_trace_scroll_area.setWidget(self.cell_trace_scroll_area_contents)
-        # self.cell_trace_box_layout.addWidget(self.cell_trace_scroll_area)
+        self.cell_view_layout.addWidget(self.cell_view_scroll_area)
+        self.cell_view_layout.addLayout(self.cell_view_controls_layout)
+        self.cell_trace_box_layout.addLayout(self.cell_view_layout)
 
+        # ==Cell Trace View== #
         self.cell_trace_scroll_area = QListWidget()
         self.cell_trace_box_layout.addWidget(self.cell_trace_scroll_area)
         self.cell_trace_scroll_area.setSizeAdjustPolicy(QListWidget.SizeAdjustPolicy.AdjustToContents)
-        self.cell_trace_scroll_area.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
+        self.cell_trace_scroll_area.setSizePolicy(QSizePolicy.Policy.MinimumExpanding,
+                                                  QSizePolicy.Policy.MinimumExpanding)
         self.cell_trace_scroll_area.setSpacing(2)
         self.cell_trace_scroll_area.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.populate_cell_traces()
 
-        self.bottom_half_container.addWidget(self.cell_trace_box)
         self.main_layout.addLayout(self.bottom_half_container)
+        self.bottom_half_container.addWidget(self.cell_trace_box)
+
+    def populate_selection_list(self):
+        self.cell_selection_checkbox_list = []
+
+        for each in self.cells:
+            selection_CB = QCheckBox(str(each))
+            selection_CB.setCheckState(Qt.CheckState.Checked)
+            self.cell_selection_checkbox_list.append(selection_CB)
+            self.cell_select_checkbox_layout.addWidget(selection_CB)
+
+    def populate_view_list(self):
+        self.cell_view_checkbox_list = []
+
+        for each in self.cells:
+            view_CB = QCheckBox(str(each))
+            view_CB.setCheckState(Qt.CheckState.Checked)
+            self.cell_view_checkbox_list.append(view_CB)
+            self.cell_view_checkbox_layout.addWidget(view_CB)
+
+    def populate_cell_traces(self):
+        for each in self.cell_traces:
+            _list_widget = QListWidgetItem()
+            _list_widget.setSizeHint(QSize(each.width()/3, each.height()))
+            self.cell_trace_scroll_area.addItem(_list_widget)
+            self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
+
+    def init_window_params(self):
+        self.setWindowTitle('Dewan Manual Curation')
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.setFont(self.default_font)
+        self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
+        self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
 
     def closeEvent(self, e):
         self.reject()
