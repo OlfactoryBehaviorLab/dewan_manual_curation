@@ -151,16 +151,26 @@ class ManualCurationUI(QDialog):
 
     def view_all(self):
         self.change_view_checkboxes(True)
-        for trace in self.trace_pointers:
-            trace.setHidden(False)
+        # for trace in self.trace_pointers:
+        #     trace.setHidden(False)
 
     def view_none(self):
         self.change_view_checkboxes()
-        for trace in self.trace_pointers:
-            trace.setHidden(True)
+        # for trace in self.trace_pointers:
+        #     trace.setHidden(True)
 
-    def on_checkbox_change(self, event, cell):
-        print(event, cell)
+    def on_checkbox_change(self, cell, state):
+        cell_index = int(cell.split('C')[1])
+
+        if state == 2:  # checked
+            #  show this trace
+            self.trace_pointers[cell_index].setHidden(False)
+        elif state == 0:  # unchecked
+            #  hide this trace
+            self.trace_pointers[cell_index].setHidden(True)
+
+
+
 
 
     def initUI(self):
