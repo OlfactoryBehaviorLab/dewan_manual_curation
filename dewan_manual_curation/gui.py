@@ -23,6 +23,7 @@ class ManualCurationUI(QDialog):
         self.cell_list = None
         self.select_all_button = None
         self.select_none_button = None
+        self.export_cells_button = None
         self.cell_selection_checkbox_list = None
         self.cell_view_checkbox_list = None
         # Cell View List Components
@@ -122,6 +123,8 @@ class ManualCurationUI(QDialog):
         for checkbox in self.cell_selection_checkbox_list:
             checkbox.setCheckState(Qt.CheckState.Checked)
 
+    def export_cells(self):
+        print(self.value)
     def populate_selection_list(self):
         self.cell_selection_checkbox_list = []
 
@@ -184,8 +187,12 @@ class ManualCurationUI(QDialog):
         self.select_none_button = QPushButton(u"Select None")
         self.select_none_button.clicked.connect(self.select_none)
         self.select_none_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.export_cells_button = QPushButton(u"Export Cells")
+        self.export_cells_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.export_cells_button.clicked.connect(self.export_cells)
         self.cell_list_control_layout.addWidget(self.select_all_button)
         self.cell_list_control_layout.addWidget(self.select_none_button)
+        self.cell_list_control_layout.addWidget(self.export_cells_button)
         self.cell_list_layout.addLayout(self.cell_list_control_layout)
 
         self.top_half_container.addWidget(self.cell_list_box)  # Cell list to top half
@@ -262,7 +269,6 @@ class ManualCurationUI(QDialog):
         # ==Cell Trace View== #
         self.cell_trace_scroll_area_contents = QWidget()
         self.cell_trace_contents_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
-
 
         self.populate_cell_traces()
 
