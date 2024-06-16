@@ -149,8 +149,8 @@ class ManualCurationUI(QDialog):
         for each in self.cell_traces:
             _list_widget = QListWidgetItem()
             _list_widget.setSizeHint(QSize(each.width()/3, each.height()))
-            self.cell_trace_list_view.addItem(_list_widget)
-            self.cell_trace_list_view.setItemWidget(_list_widget, each)
+            self.cell_trace_scroll_area.addItem(_list_widget)
+            self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
@@ -260,6 +260,8 @@ class ManualCurationUI(QDialog):
         self.cell_trace_box.setLayout(self.cell_trace_box_layout)
 
         # ==Cell View List== #
+        self.cell_view_list_layout = QVBoxLayout()
+
         self.cell_view_list = QWidget()
         self.cell_view_checkbox_layout = QVBoxLayout(self.cell_view_list)
         self.populate_view_list()
@@ -267,10 +269,18 @@ class ManualCurationUI(QDialog):
         self.cell_view_scroll_area = QScrollArea()
         self.cell_view_scroll_area.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.cell_view_scroll_area.setMinimumWidth(100)
-
         self.cell_view_scroll_area.setWidget(self.cell_view_list)
-        self.cell_trace_box_layout.addWidget(self.cell_view_scroll_area)
 
+        self.cell_view_controls_layout = QHBoxLayout()
+        self.view_all_button = QPushButton(u'View All')
+        self.view_none_button = QPushButton(u'View None')
+
+        self.cell_view_controls_layout.addWidget(self.view_all_button)
+        self.cell_view_controls_layout.addWidget(self.view_none_button)
+
+        self.cell_view_list_layout.addWidget(self.cell_view_scroll_area)
+        self.cell_view_list_layout.addLayout(self.cell_view_controls_layout)
+        self.cell_trace_box_layout.addLayout(self.cell_view_list_layout)
         # ==Cell Trace View== #
         # self.cell_trace_scroll_area_contents = QWidget()
         # self.cell_trace_contents_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
