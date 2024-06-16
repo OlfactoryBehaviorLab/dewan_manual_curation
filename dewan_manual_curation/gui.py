@@ -132,10 +132,25 @@ class ManualCurationUI(QDialog):
         print(self.value)
 
     def view_all(self):
-        pass
+        print("Hello There!!")
+        _traces = self.get_trace_pointers()
+        for trace in _traces:
+            trace.setHidden(False)
 
     def view_none(self):
-        pass
+        print("Avada Kedavra!")
+        _traces = self.get_trace_pointers()
+        for trace in _traces:
+            trace.setHidden(True)
+
+    def get_trace_pointers(self):
+        trace_pointers = []
+
+        for trace in range(self.cell_trace_scroll_area.count()):
+            _trace = self.cell_trace_scroll_area.item(trace)
+            trace_pointers.append(_trace)
+
+        return trace_pointers
 
     def initUI(self):
         self.init_window_params()
