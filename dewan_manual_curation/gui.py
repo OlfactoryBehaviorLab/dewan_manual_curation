@@ -151,27 +151,22 @@ class ManualCurationUI(QDialog):
 
     def view_all(self):
         self.change_view_checkboxes(True)
-        # for trace in self.trace_pointers:
-        #     trace.setHidden(False)
+        for trace in self.trace_pointers:
+            trace.setHidden(False)
 
     def view_none(self):
         self.change_view_checkboxes()
-        # for trace in self.trace_pointers:
-        #     trace.setHidden(True)
+        for trace in self.trace_pointers:
+            trace.setHidden(True)
 
-    def on_checkbox_change(self, cell, state):
-        cell_index = int(cell.split('C')[1])
+    def on_checkbox_release(self, checkbox):
+        cell_index = int(checkbox.text().split('C')[1])
+        check_state = checkbox.checkState()
 
-        if state == 2:  # checked
-            #  show this trace
+        if check_state == Qt.CheckState.Checked:
             self.trace_pointers[cell_index].setHidden(False)
-        elif state == 0:  # unchecked
-            #  hide this trace
+        elif check_state == Qt.CheckState.Unchecked:
             self.trace_pointers[cell_index].setHidden(True)
-
-
-
-
 
     def initUI(self):
         self.init_window_params()
@@ -327,7 +322,7 @@ class ManualCurationUI(QDialog):
         for each in self.cells:
             view_CB = QCheckBox(str(each))
             view_CB.setCheckState(Qt.CheckState.Checked)
-            view_CB.stateChanged.connect(partial(self.on_checkbox_change, each))
+            view_CB.released.connect(partial(self.on_checkbox_release, view_CB))
             self.cell_view_checkbox_list.append(view_CB)
             self.cell_view_checkbox_layout.addWidget(view_CB)
 
