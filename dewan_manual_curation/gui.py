@@ -67,6 +67,7 @@ class ManualCurationUI(QDialog):
         self.scale = 1
         self.direction = 0
 
+        self.trace_pointers = []
         self.value = []
 
         self.initUI()
@@ -133,24 +134,14 @@ class ManualCurationUI(QDialog):
 
     def view_all(self):
         print("Hello There!!")
-        _traces = self.get_trace_pointers()
-        for trace in _traces:
+        for trace in self.trace_pointers:
             trace.setHidden(False)
 
     def view_none(self):
         print("Avada Kedavra!")
-        _traces = self.get_trace_pointers()
-        for trace in _traces:
+        for trace in self.trace_pointers:
             trace.setHidden(True)
 
-    def get_trace_pointers(self):
-        trace_pointers = []
-
-        for trace in range(self.cell_trace_scroll_area.count()):
-            _trace = self.cell_trace_scroll_area.item(trace)
-            trace_pointers.append(_trace)
-
-        return trace_pointers
 
     def initUI(self):
         self.init_window_params()
@@ -285,6 +276,7 @@ class ManualCurationUI(QDialog):
         self.cell_trace_scroll_area.setSpacing(2)
         self.cell_trace_scroll_area.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.populate_cell_traces()
+        self.get_trace_pointers()
 
         self.main_layout.addLayout(self.bottom_half_container)
         self.bottom_half_container.addWidget(self.cell_trace_box)
