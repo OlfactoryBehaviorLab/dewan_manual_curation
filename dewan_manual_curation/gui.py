@@ -242,7 +242,7 @@ class ManualCurationUI(QDialog):
         # ==CELL TRACE REGION== #
         self.cell_trace_box = QGroupBox("Traces")  # Create the cell trace box and add it to the layout
         self.cell_trace_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.cell_trace_box.setMinimumHeight(200)
+        self.cell_trace_box.setMinimumHeight(300)
 
         self.cell_trace_box_layout = QHBoxLayout()
         self.cell_trace_box.setLayout(self.cell_trace_box_layout)
@@ -253,18 +253,20 @@ class ManualCurationUI(QDialog):
         self.populate_view_list()
 
         self.cell_view_scroll_area = QScrollArea()
-        self.cell_view_scroll_area.setMaximumWidth(250)
+        self.cell_view_scroll_area.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.cell_view_scroll_area.setMinimumWidth(100)
+
         self.cell_view_scroll_area.setWidget(self.cell_view_list)
         self.cell_trace_box_layout.addWidget(self.cell_view_scroll_area)
 
         # ==Cell Trace View== #
         self.cell_trace_scroll_area_contents = QWidget()
         self.cell_trace_contents_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
-        self.cell_trace_scroll_area_contents.setGeometry(QRect(0, 0, 850, 320))
+
+
         self.populate_cell_traces()
 
         self.cell_trace_scroll_area = QScrollArea()
-        self.cell_trace_scroll_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.cell_trace_scroll_area.setWidgetResizable(True)
         self.cell_trace_scroll_area.setWidget(self.cell_trace_scroll_area_contents)
         self.cell_trace_box_layout.addWidget(self.cell_trace_scroll_area)
