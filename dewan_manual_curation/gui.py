@@ -128,6 +128,14 @@ class ManualCurationUI(QDialog):
             _trace = self.cell_trace_scroll_area.item(trace)
             self.trace_pointers.append(_trace)
 
+    def change_view_checkboxes(self, checked=False):
+        check_state = Qt.CheckState.Unchecked
+        if checked:
+            check_state = Qt.CheckState.Checked
+
+        for checkbox in self.cell_view_checkbox_list:
+            checkbox.setCheckState(check_state)
+
     # ==Button Callbacks== #
 
     def select_none(self):
@@ -142,12 +150,12 @@ class ManualCurationUI(QDialog):
         print(self.value)
 
     def view_all(self):
-        print("Hello There!!")
+        self.change_view_checkboxes(True)
         for trace in self.trace_pointers:
             trace.setHidden(False)
 
     def view_none(self):
-        print("Avada Kedavra!")
+        self.change_view_checkboxes()
         for trace in self.trace_pointers:
             trace.setHidden(True)
 
