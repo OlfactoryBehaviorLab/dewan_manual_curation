@@ -1,8 +1,9 @@
-from PySide6.QtCore import Qt, QRect
+from PySide6.QtCore import Qt, QRect, QSize
 from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
-                               QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget)
+                               QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListView,
+                               QListWidgetItem, QListWidget, QAbstractItemView)
 
 from .project_folder import ProjectFolder
 
@@ -125,6 +126,7 @@ class ManualCurationUI(QDialog):
 
     def export_cells(self):
         print(self.value)
+
     def populate_selection_list(self):
         self.cell_selection_checkbox_list = []
 
@@ -145,7 +147,10 @@ class ManualCurationUI(QDialog):
 
     def populate_cell_traces(self):
         for each in self.cell_traces:
-            self.cell_trace_contents_layout.addWidget(each)
+            _list_widget = QListWidgetItem()
+            _list_widget.setSizeHint(QSize(each.width()/3, each.height()))
+            self.cell_trace_list_view.addItem(_list_widget)
+            self.cell_trace_list_view.setItemWidget(_list_widget, each)
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
@@ -267,15 +272,23 @@ class ManualCurationUI(QDialog):
         self.cell_trace_box_layout.addWidget(self.cell_view_scroll_area)
 
         # ==Cell Trace View== #
-        self.cell_trace_scroll_area_contents = QWidget()
-        self.cell_trace_contents_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
+        # self.cell_trace_scroll_area_contents = QWidget()
+        # self.cell_trace_contents_layout = QVBoxLayout(self.cell_trace_scroll_area_contents)
+        #
+        # self.populate_cell_traces()
+        #
+        # self.cell_trace_scroll_area = QScrollArea()
+        # self.cell_trace_scroll_area.setWidgetResizable(True)
+        # self.cell_trace_scroll_area.setWidget(self.cell_trace_scroll_area_contents)
+        # self.cell_trace_box_layout.addWidget(self.cell_trace_scroll_area)
 
-        self.populate_cell_traces()
-
-        self.cell_trace_scroll_area = QScrollArea()
-        self.cell_trace_scroll_area.setWidgetResizable(True)
-        self.cell_trace_scroll_area.setWidget(self.cell_trace_scroll_area_contents)
+        self.cell_trace_scroll_area = QListWidget()
         self.cell_trace_box_layout.addWidget(self.cell_trace_scroll_area)
+        self.cell_trace_scroll_area.setSizeAdjustPolicy(QListWidget.SizeAdjustPolicy.AdjustToContents)
+        self.cell_trace_scroll_area.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
+        self.cell_trace_scroll_area.setSpacing(2)
+        self.cell_trace_scroll_area.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.populate_cell_traces()
 
         self.bottom_half_container.addWidget(self.cell_trace_box)
         self.main_layout.addLayout(self.bottom_half_container)
