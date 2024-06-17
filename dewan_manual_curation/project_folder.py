@@ -12,6 +12,7 @@ class ProjectFolder:
         self.max_projection_path = None
         self.cell_trace_data_path = None
         self.cell_props_path = None
+        self.cell_contours_path = None
         self.inscopix_path = None
 
         self.setup_folder()
@@ -69,6 +70,7 @@ class ProjectFolder:
         max_projection_path = list(self.inscopix_path.glob('*HD*MAX_PROJ*.tiff'))
         cell_trace_data_path = list(self.inscopix_path.glob('*TRACES*.csv'))
         cell_props_path = list(self.inscopix_path.glob('*props*.csv'))
+        cell_contours_path = list(self.inscopix_path.glob('*CONTOURS*.json'))
 
         if len(max_projection_path) == 0:
             raise FileNotFoundError(f'Max Projection image not found!')
@@ -76,6 +78,8 @@ class ProjectFolder:
             raise FileNotFoundError(f'Cell Trace data not found!')
         elif len(cell_props_path) == 0:
             raise FileNotFoundError(f'Cell Props data not found!')
+        elif len(cell_contours_path) == 0:
+            raise FileNotFoundError(f'Cell Contour data not found!')
         else:
             self.max_projection_path = max_projection_path[0]
             self.cell_trace_data_path = cell_trace_data_path[0]
@@ -91,5 +95,6 @@ class ProjectFolder:
                 inscopix_directory={self.inscopix_path}, \n \
                 max_projection_path={self.max_projection_path}, \n \
                 cell_trace_data_path={self.cell_trace_data_path}, \n \
-                cell_props_path={self.cell_props_path})'
+                cell_props_path={self.cell_props_path}, \n \
+                cell_contours_path={self.cell_contours_path})'
         return description
