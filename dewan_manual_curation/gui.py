@@ -203,7 +203,8 @@ class ManualCurationUI(QDialog):
         self.cell_list_layout.addWidget(self.cell_scroll_area)
 
         # ==Cell Selection List Controls== #
-        self.cell_list_control_layout = QHBoxLayout()  # Add the two buttons to a layout
+        self.cell_list_control_layout = QVBoxLayout()
+        self.cell_list_control_selection_layout = QHBoxLayout()  # Add the two buttons to a layout
         self.select_all_button = QPushButton(u"Select All")
         self.select_all_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.select_all_button.clicked.connect(self.select_all)
@@ -213,8 +214,9 @@ class ManualCurationUI(QDialog):
         self.export_cells_button = QPushButton(u"Export Cells")
         self.export_cells_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.export_cells_button.clicked.connect(self.export_cells)
-        self.cell_list_control_layout.addWidget(self.select_all_button)
-        self.cell_list_control_layout.addWidget(self.select_none_button)
+        self.cell_list_control_selection_layout.addWidget(self.select_all_button)
+        self.cell_list_control_selection_layout.addWidget(self.select_none_button)
+        self.cell_list_control_layout.addLayout(self.cell_list_control_selection_layout)
         self.cell_list_control_layout.addWidget(self.export_cells_button)
         self.cell_list_layout.addLayout(self.cell_list_control_layout)
 
