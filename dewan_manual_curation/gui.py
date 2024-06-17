@@ -4,14 +4,16 @@ from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListView,
                                QListWidgetItem, QListWidget, QAbstractItemView)
+from typing import TYPE_CHECKING
+from .cell_trace import CellTrace
 
-from .project_folder import ProjectFolder
-
+if TYPE_CHECKING:
+    from .project_folder import ProjectFolder
 SCALE_FACTOR = 0.01
 
 
 class ManualCurationUI(QDialog):
-    def __init__(self, project_folder: ProjectFolder, cell_names, cell_traces):
+    def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces):
 
         super().__init__()
         self.default_font = QFont("Arial", 12)
@@ -75,16 +77,18 @@ class ManualCurationUI(QDialog):
     #  Function Overloads
     def eventFilter(self, obj, event):
         if type(event) is QWheelEvent:
-            if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
-
-                num_degrees = event.angleDelta() / 8
-                steps = int(num_degrees.y() / 15)
-
-                self.zoom_image(steps)
-            return True
+            if type(obj) is CellTrace:
+                self.cell_trace_scroll_area.wheelEvent(event)
+                return True
+            elif obj is self.max_projection_view.viewport():
+                if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                    num_degrees = event.angleDelta() / 8
+                    steps = int(num_degrees.y() / 15)
+                    self.zoom_image(steps)
+                    return True
         elif type(event) is QShowEvent:
             self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
-            return False  # We don't actually wanna handle this event, just needed to run this with it
+            # We don't actually wanna handle this event, just needed to run this with it
         return False
 
     def keyPressEvent(self, event):
@@ -328,6 +332,7 @@ class ManualCurationUI(QDialog):
 
     def populate_cell_traces(self):
         for each in self.cell_traces:
+            each.installEventFilter(self)
             _list_widget = QListWidgetItem()
             _list_widget.setSizeHint(QSize(each.width()/3, each.height()))
             self.cell_trace_scroll_area.addItem(_list_widget)
