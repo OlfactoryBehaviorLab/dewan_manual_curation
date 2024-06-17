@@ -237,13 +237,16 @@ class ManualCurationUI(QDialog):
         self.zoom_in = QPushButton("+")
         self.zoom_out = QPushButton("-")
         self.zoom_reset = QPushButton("R")
+        self.recolor_test = QPushButton('T')
         self.zoom_in.clicked.connect(self.zoom_image_in)
         self.zoom_out.clicked.connect(self.zoom_image_out)
         self.zoom_reset.clicked.connect(self.reset_image_zoom)
+        self.recolor_test.clicked.connect(self.change_colors)
 
         self.max_projection_controls.addWidget(self.zoom_in)
         self.max_projection_controls.addWidget(self.zoom_out)
         self.max_projection_controls.addWidget(self.zoom_reset)
+        self.max_projection_controls.addWidget(self.recolor_test)
         self.max_projection_layout.addLayout(self.max_projection_controls)
 
         # ==Max Projection Display== #
@@ -265,9 +268,8 @@ class ManualCurationUI(QDialog):
         self.scene.addItem(self.pixmap_item)
 
         self.create_cell_polygons()
-        self.draw_cell_outlines()
         self.create_cell_labels()
-        self.draw_cell_labels()
+        self.draw_cell_outlines()
 
         self.max_projection_view.setScene(self.scene)
 
@@ -313,6 +315,7 @@ class ManualCurationUI(QDialog):
         self.cell_trace_box_layout.addLayout(self.cell_view_layout)
 
         # ==Cell Trace View== #
+        # TODO: reduce scroll bar step size
         self.cell_trace_scroll_area = QListWidget()
         self.cell_trace_box_layout.addWidget(self.cell_trace_scroll_area)
         self.cell_trace_scroll_area.setSizeAdjustPolicy(QListWidget.SizeAdjustPolicy.AdjustToContents)
@@ -356,17 +359,26 @@ class ManualCurationUI(QDialog):
             self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
 
     def draw_cell_outlines(self):
-        fill_brush = QBrush()
-        fill_brush.setStyle(Qt.BrushStyle.NoBrush)
-        outline_pen = QPen(Qt.GlobalColor.red, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
+        brush = QBrush()
+        brush.setStyle(Qt.BrushStyle.NoBrush)
+        pen = QPen(Qt.GlobalColor.red, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
                            Qt.PenJoinStyle.RoundJoin)
 
-        for outline in self.outline_polygons:
-            self.scene.addPolygon(outline, outline_pen, fill_brush)
+        self.polygon_pointers = []
 
-    def draw_cell_labels(self):
-        for label in self.cell_labels:
-            self.scene.addItem(label)
+        for i, polygon in enumerate(self.outline_polygons):
+            _polygon_reference = self.scene.addPolygon(polygon, pen, brush)
+            _label = self.cell_labels[i]
+            _label.setParentItem(_polygon_reference)
+            self.scene.addItem(_label)
+            self.polygon_pointers.append(_polygon_reference)
+
+    def change_colors(self):
+        for pgon in self.polygon_pointers:
+            pen = QPen(Qt.GlobalColor.green, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
+                       Qt.PenJoinStyle.RoundJoin)
+            pgon.setPen(pen)
+            pgon.update()
 
     def create_cell_polygons(self):
         cell_outline_polygons = []
@@ -399,6 +411,7 @@ class ManualCurationUI(QDialog):
             cell_labels.append(_label)
 
         self.cell_labels = cell_labels
+
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
