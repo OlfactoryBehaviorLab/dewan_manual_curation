@@ -88,7 +88,7 @@ class ManualCurationUI(QDialog):
                     steps = int(num_degrees.y() / 15)
                     self.zoom_image(steps)
                     return True
-        elif type(event) is QShowEvent:
+        elif type(event) is QShowEvent and obj is self.max_projection_view.viewport():
             self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
             # We don't actually wanna handle this event, just needed to run this with it
         return False
