@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt, QRect, QSize, QPoint
-from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent, QPolygonF
+from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent, QPolygonF, QBrush, QColor, QPen
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListView,
@@ -264,6 +264,7 @@ class ManualCurationUI(QDialog):
         self.scene.addItem(self.pixmap_item)
 
         self.create_cell_polygons()
+        self.draw_cell_outlines()
 
         self.max_projection_view.setScene(self.scene)
 
@@ -339,6 +340,7 @@ class ManualCurationUI(QDialog):
             view_CB = QCheckBox(str(each))
             view_CB.setCheckState(Qt.CheckState.Checked)
             view_CB.released.connect(partial(self.on_checkbox_release, view_CB))
+            # Pass a reference of each checkbox to the click callback
             self.cell_view_checkbox_list.append(view_CB)
             self.cell_view_checkbox_layout.addWidget(view_CB)
 
@@ -350,9 +352,14 @@ class ManualCurationUI(QDialog):
             self.cell_trace_scroll_area.addItem(_list_widget)
             self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
 
-
     def draw_cell_outlines(self):
-        pass
+        fill_brush = QBrush()
+        fill_brush.setStyle(Qt.BrushStyle.NoBrush)
+        outline_pen = QPen(Qt.GlobalColor.red, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
+                           Qt.PenJoinStyle.RoundJoin)
+
+        for outline in self.outline_polygons:
+            self.scene.addPolygon(outline, outline_pen, fill_brush)
 
     def create_cell_polygons(self):
         cell_keys = self.cell_contours.keys()
@@ -362,7 +369,7 @@ class ManualCurationUI(QDialog):
             cell_coordinates = self.cell_contours[key][0]  # Get the vertices for a specific cell
             for pair in cell_coordinates:
                 _x, _y = pair
-                _point = QPoint(_x, _y)
+                _point = QPoint(_x, _y) * 4
                 polygon_points.append(_point)  # We need a list of QPoints, so generate a QPoint for each pair
 
             _cell_polygon = QPolygonF(polygon_points)
