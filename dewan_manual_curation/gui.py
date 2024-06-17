@@ -262,6 +262,9 @@ class ManualCurationUI(QDialog):
         self.pixmap = QPixmap.fromImage(self.image)
         self.pixmap_item = QGraphicsPixmapItem(self.pixmap)
         self.scene.addItem(self.pixmap_item)
+
+        self.create_cell_polygons()
+
         self.max_projection_view.setScene(self.scene)
 
         self.max_projection_layout.addWidget(self.max_projection_view)
@@ -346,6 +349,13 @@ class ManualCurationUI(QDialog):
             _list_widget.setSizeHint(QSize(each.width()/3, each.height()))
             self.cell_trace_scroll_area.addItem(_list_widget)
             self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
+
+
+    def draw_cell_outlines(self):
+        pass
+
+    def create_cell_polygons(self):
+        print(self.cell_contours)
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
