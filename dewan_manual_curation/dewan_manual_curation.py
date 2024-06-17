@@ -1,5 +1,5 @@
 import qdarktheme
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication
 
 from . import gui
 from .project_folder import ProjectFolder
@@ -21,11 +21,10 @@ def launch_gui(cell_traces_override=None):
     window = gui.ManualCurationUI(project_folder, cell_names, cell_traces_override)
     window.show()
 
-    result = app.exec()
-    print(window.value)
+    return_val = app.exec()
 
-    del window
-    del app
+    if return_val == 0:  # Success!
+        return window.curated_cells
 
 
 if __name__ == '__main__':
