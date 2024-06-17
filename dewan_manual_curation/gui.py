@@ -13,13 +13,14 @@ SCALE_FACTOR = 0.01
 
 
 class ManualCurationUI(QDialog):
-    def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces):
+    def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces, cell_contours):
 
         super().__init__()
         self.default_font = QFont("Arial", 12)
         self.project_folder = project_folder
         self.cells = cell_names
         self.cell_traces = cell_traces
+        self.cell_contours = cell_contours
 
         #  Cell Selection List Components
         self.cell_scroll_area = None
