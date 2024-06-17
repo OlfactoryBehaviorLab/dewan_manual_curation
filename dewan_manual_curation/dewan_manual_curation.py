@@ -9,10 +9,15 @@ from .cell_trace import CellTrace
 from dewan_calcium.helpers import DewanJSON
 
 
-def launch_gui(cell_trace_data, cell_names_override=None,
+def launch_gui(cell_trace_data_override=None, cell_names_override=None,
                cell_contours_override=None):
 
     project_folder = ProjectFolder(project_dir='C:/Projects/Test_Data/VGLUT-20')
+
+    if cell_trace_data_override is None:
+        pass  # Load cell trace data from pickle
+    else:
+        cell_trace_data = cell_trace_data_override
 
     if cell_names_override is None:
         cell_props = pd.read_csv(project_folder.cell_props_path, header=0, engine='pyarrow')
@@ -26,6 +31,7 @@ def launch_gui(cell_trace_data, cell_names_override=None,
         cell_contours = cell_contours_override
 
     cell_traces = generate_cell_traces(cell_trace_data, cell_names)
+
     cell_centroids = generate_new_centroids(cell_names, cell_contours)
 
     app = QApplication.instance()
@@ -53,6 +59,7 @@ def generate_cell_traces(cell_trace_data, cell_names):
 
     return cell_traces
 
+
 def generate_new_centroids(cell_names, cell_contours):
     cell_keys = cell_contours.keys()
 
@@ -66,6 +73,7 @@ def generate_new_centroids(cell_names, cell_contours):
     centroids_dict = dict(list(zip(cell_names, centroids)))
 
     return centroids_dict
+
 
 if __name__ == '__main__':
     launch_gui()
