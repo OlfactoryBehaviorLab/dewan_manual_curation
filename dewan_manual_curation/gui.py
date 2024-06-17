@@ -1,5 +1,5 @@
-from PySide6.QtCore import Qt, QRect, QSize
-from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent
+from PySide6.QtCore import Qt, QRect, QSize, QPoint
+from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent, QPolygonF
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListView,
@@ -355,7 +355,20 @@ class ManualCurationUI(QDialog):
         pass
 
     def create_cell_polygons(self):
-        print(self.cell_contours)
+        cell_keys = self.cell_contours.keys()
+        cell_outline_polygons = []
+        for key in cell_keys:  # Iterate through cells
+            polygon_points = []
+            cell_coordinates = self.cell_contours[key][0]  # Get the vertices for a specific cell
+            for pair in cell_coordinates:
+                _x, _y = pair
+                _point = QPoint(_x, _y)
+                polygon_points.append(_point)  # We need a list of QPoints, so generate a QPoint for each pair
+
+            _cell_polygon = QPolygonF(polygon_points)
+            cell_outline_polygons.append(_cell_polygon)
+
+        self.outline_polygons = cell_outline_polygons
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
