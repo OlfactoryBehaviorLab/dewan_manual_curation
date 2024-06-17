@@ -352,6 +352,7 @@ class ManualCurationUI(QDialog):
         self.setFont(self.default_font)
         self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
         self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
+        self.activateWindow()
 
     def closeEvent(self, e):
         self.reject()
