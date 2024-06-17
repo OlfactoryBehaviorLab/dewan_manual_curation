@@ -3,7 +3,7 @@ from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent, QPoly
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListView,
-                               QListWidgetItem, QListWidget, QAbstractItemView)
+                               QListWidgetItem, QListWidget, QAbstractItemView, QGraphicsTextItem)
 from typing import TYPE_CHECKING
 from .cell_trace import CellTrace
 
@@ -13,7 +13,7 @@ SCALE_FACTOR = 0.01
 
 
 class ManualCurationUI(QDialog):
-    def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces, cell_contours):
+    def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces, cell_contours, cell_centroids):
 
         super().__init__()
         self.default_font = QFont("Arial", 12)
@@ -21,6 +21,7 @@ class ManualCurationUI(QDialog):
         self.cells = cell_names
         self.cell_traces = cell_traces
         self.cell_contours = cell_contours
+        self.cell_centroids = cell_centroids
 
         #  Cell Selection List Components
         self.cell_scroll_area = None
@@ -265,6 +266,8 @@ class ManualCurationUI(QDialog):
 
         self.create_cell_polygons()
         self.draw_cell_outlines()
+        self.create_cell_labels()
+        self.draw_cell_labels()
 
         self.max_projection_view.setScene(self.scene)
 
@@ -361,21 +364,41 @@ class ManualCurationUI(QDialog):
         for outline in self.outline_polygons:
             self.scene.addPolygon(outline, outline_pen, fill_brush)
 
+    def draw_cell_labels(self):
+        for label in self.cell_labels:
+            self.scene.addItem(label)
+
     def create_cell_polygons(self):
-        cell_keys = self.cell_contours.keys()
         cell_outline_polygons = []
-        for key in cell_keys:  # Iterate through cells
-            polygon_points = []
-            cell_coordinates = self.cell_contours[key][0]  # Get the vertices for a specific cell
+        for cell in self.cells:  # Iterate through cells
+            polygon_verts = []
+            cell_coordinates = self.cell_contours[cell][0]  # Get the vertices for a specific cell
             for pair in cell_coordinates:
                 _x, _y = pair
                 _point = QPoint(_x, _y) * 4
-                polygon_points.append(_point)  # We need a list of QPoints, so generate a QPoint for each pair
+                polygon_verts.append(_point)  # We need a list of QPoints, so generate a QPoint for each pair
 
-            _cell_polygon = QPolygonF(polygon_points)
+            _cell_polygon = QPolygonF(polygon_verts)
             cell_outline_polygons.append(_cell_polygon)
 
         self.outline_polygons = cell_outline_polygons
+
+    def create_cell_labels(self):
+        cell_labels = []
+
+        for cell in self.cells:
+            centroid = self.cell_centroids[cell]
+            _x, _y = centroid
+            _cell_label = str(int(cell.split('C')[1]))  # Little trickery to drop leading zeros
+
+            _label = QGraphicsTextItem(_cell_label)
+            _position = QPoint(_x, _y) * 4
+            _label.setPos(_position)
+
+            _label.setFont(self.default_font)
+            cell_labels.append(_label)
+
+        self.cell_labels = cell_labels
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
