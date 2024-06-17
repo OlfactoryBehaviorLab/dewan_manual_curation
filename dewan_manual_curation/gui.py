@@ -356,9 +356,5 @@ class ManualCurationUI(QDialog):
         self.reject()
 
     def reject(self):
-        self.value = -10
-        self.close()
-
-    def accept(self):
-        self.value = 10
-        self.close()
+        self.curated_cells = []
+        super().reject()
