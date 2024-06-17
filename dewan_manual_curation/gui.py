@@ -72,6 +72,8 @@ class ManualCurationUI(QDialog):
         self.trace_pointers = []
         self.value = []
 
+        self.curated_cells = []
+
         self.initUI()
 
     #  Function Overloads
@@ -151,7 +153,10 @@ class ManualCurationUI(QDialog):
             checkbox.setCheckState(Qt.CheckState.Checked)
 
     def export_cells(self):
-        print(self.value)
+        for checkbox in self.cell_selection_checkbox_list:
+            if checkbox.checkState() is Qt.CheckState.Checked:
+                self.curated_cells.append(checkbox.text())
+        self.accept()
 
     def view_all(self):
         self.change_view_checkboxes(True)
