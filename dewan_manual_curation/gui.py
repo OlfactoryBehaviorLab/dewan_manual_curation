@@ -52,6 +52,7 @@ class ManualCurationUI(QDialog):
         self.cell_trace_contents_layout = None
         self.cell_view_layout = None
         self.cell_view_controls_layout = None
+        self.cell_list_control_selection_layout = None
         #  Group Boxes
         self.cell_list_box = None
         self.max_projection_box = None
