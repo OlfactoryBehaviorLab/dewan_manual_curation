@@ -7,7 +7,7 @@ class MaximumProjection(QGraphicsScene):
     def __init__(self, cell_names, cell_contours, max_projection_path):
         super().__init__()
 
-        self.cell_names = cell_names
+        self.cells = cell_names
         self.cell_contours = cell_contours
         self.image_path = max_projection_path
 
@@ -25,9 +25,6 @@ class MaximumProjection(QGraphicsScene):
         #  References back to polygons for post-draw color changes
         self.cell_outline_references = []
         self.outline_dict = {}
-
-        self.scale = 1
-        self.direction = 0
 
         self._load_maxproj_image()
         self._create_outline_polygons()
@@ -48,6 +45,11 @@ class MaximumProjection(QGraphicsScene):
         #polygon.setPen(new_pen)
 
         polygon.update()
+
+    def reset_polygon_colors(self):
+        for cell in self.cells:
+            self.change_polygon_color(cell, 0)
+
 
     def _load_maxproj_image(self):
         self.image = QImage(self.image_path)

@@ -134,13 +134,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
             self.trace_pointers.append(_trace)
 
 
-    def reset_polygon_colors(self):
-        for cell in self.cells:
-            self.change_polygon_color(cell, 0)
-
-    # ==Callbacks== #
-
-
     def initUI(self):
         self.init_window_params()
 
