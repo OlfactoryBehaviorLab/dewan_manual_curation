@@ -1,14 +1,16 @@
 from PySide6.QtCore import QPoint, Qt
-from PySide6.QtGui import QImage, QPixmap, QPolygonF, QPen, QBrush
+from PySide6.QtGui import QImage, QPixmap, QPolygonF, QPen, QBrush, QFont
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QGraphicsTextItem
 
 
 class MaximumProjection(QGraphicsScene):
-    def __init__(self, cell_names, cell_contours, max_projection_path):
+    def __init__(self, cell_names, cell_contours, cell_centroids, max_projection_path):
         super().__init__()
 
+        self.default_font = QFont("Arial", 12, 1)
         self.cells = cell_names
         self.cell_contours = cell_contours
+        self.cell_centroids = cell_centroids
         self.image_path = max_projection_path
 
         self.image = None
