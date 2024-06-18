@@ -13,10 +13,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .project_folder import ProjectFolder
 
-SCALE_FACTOR = 0.01
-
 
 class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
+
     def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces, cell_contours, cell_centroids):
 
         super().__init__()
@@ -26,6 +25,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.cell_traces = cell_traces
         self.cell_contours = cell_contours
         self.cell_centroids = cell_centroids
+
 
         #  Cell Selection List Components
         self.cell_scroll_area = None
@@ -66,6 +66,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.cell_trace_box = None
         #  Max Projection Controls
         self.scale = 1
+        self.scale_factor = 0.01
         self.direction = 0
         self.zoom_in = None
         self.zoom_out = None
