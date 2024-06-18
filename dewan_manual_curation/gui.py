@@ -1,31 +1,25 @@
-from PySide6.QtCore import Qt, QSize, QPoint
-from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent, QPolygonF, QBrush, QPen
-from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
-                               QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
-                               QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListWidgetItem, QListWidget, QAbstractItemView, QGraphicsTextItem)
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont, QWheelEvent, QShowEvent
+from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout, QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
+                               QGraphicsView, QWidget, QListWidget, QAbstractItemView)
 
 from ._components.cell_trace import CellTrace
 from ._components.callbacks import GuiCallbacks
 from ._components.funcs import GuiFuncs
 from ._components.maxprojection import MaximumProjection
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .project_folder import ProjectFolder
-
 
 class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
-    def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces, cell_contours, cell_centroids):
+    def __init__(self, cell_names, cell_traces, cell_contours, cell_centroids, maxproj_path):
 
         super().__init__()
         self.default_font = QFont("Arial", 12)
-        self.project_folder = project_folder
         self.cells = cell_names
         self.cell_traces = cell_traces
         self.cell_contours = cell_contours
         self.cell_centroids = cell_centroids
-
+        self.maxproj_path = maxproj_path
 
         #  Cell Selection List Components
         self.cell_scroll_area = None
@@ -180,7 +174,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         # ==Max Projection Display== #
         self.max_projection = MaximumProjection(self.cells, self.cell_contours, self.cell_centroids,
-                                                self.project_folder.max_projection_path)
+                                                self.maxproj_path)
         self.max_projection_view = QGraphicsView()
         self.configure_maxproj_view()  # TODO: Maybe Move this
 
@@ -241,8 +235,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self.main_layout.addLayout(self.bottom_half_container)
         self.bottom_half_container.addWidget(self.cell_trace_box)
-
-
 
     def closeEvent(self, e):
         self.reject()
