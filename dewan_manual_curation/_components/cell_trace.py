@@ -1,9 +1,12 @@
+""" CellTrace class for displaying calcium transient data """
+
 import numpy as np
 import pandas as pd
 
 import matplotlib as mpl
 from matplotlib.pyplot import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+
 from PySide6.QtWidgets import QSizePolicy
 from sklearn.preprocessing import MinMaxScaler
 

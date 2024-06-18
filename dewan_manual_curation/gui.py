@@ -3,18 +3,20 @@ from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent, QPoly
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListWidgetItem, QListWidget, QAbstractItemView, QGraphicsTextItem)
-from typing import TYPE_CHECKING
-from dewan_manual_curation.dewan_manual_curation._components.cell_trace import CellTrace
 
+from ._components.cell_trace import CellTrace
 from ._components.callbacks import GuiCallbacks
+from ._components.funcs import GuiFuncs
 
 
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .project_folder import ProjectFolder
+
 SCALE_FACTOR = 0.01
 
 
-class ManualCurationUI(GuiCallbacks, QDialog):
+class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
     def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces, cell_contours, cell_centroids):
 
         super().__init__()
