@@ -2,8 +2,8 @@
 
 from PySide6.QtCore import Qt
 
-CHECKED = Qt.CheckState.Checked
 UNCHECKED = Qt.CheckState.Unchecked
+CHECKED = Qt.CheckState.Checked
 
 
 class GuiCallbacks:
@@ -51,3 +51,11 @@ class GuiCallbacks:
             outline_state = 0
 
         self.change_polygon_color(cell_key, outline_state)
+
+    def change_view_checkboxes(self, checked=False):
+        check_state = Qt.CheckState.Unchecked
+        if checked:
+            check_state = Qt.CheckState.Checked
+
+        for checkbox in self.cell_view_checkbox_list:
+            checkbox.setCheckState(check_state)

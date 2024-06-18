@@ -143,13 +143,6 @@ class ManualCurationUI(GuiCallbacks, QDialog):
             _trace = self.cell_trace_scroll_area.item(trace)
             self.trace_pointers.append(_trace)
 
-    def change_view_checkboxes(self, checked=False):
-        check_state = Qt.CheckState.Unchecked
-        if checked:
-            check_state = Qt.CheckState.Checked
-
-        for checkbox in self.cell_view_checkbox_list:
-            checkbox.setCheckState(check_state)
 
     def reset_polygon_colors(self):
         for cell in self.cells:
@@ -305,34 +298,7 @@ class ManualCurationUI(GuiCallbacks, QDialog):
         self.main_layout.addLayout(self.bottom_half_container)
         self.bottom_half_container.addWidget(self.cell_trace_box)
 
-    def populate_selection_list(self):
-        self.cell_selection_checkbox_list = []
 
-        for each in self.cells:
-            selection_CB = QCheckBox(str(each))
-            selection_CB.setCheckState(Qt.CheckState.Checked)
-            self.cell_selection_checkbox_list.append(selection_CB)
-            self.cell_select_checkbox_layout.addWidget(selection_CB)
-
-    def populate_view_list(self):
-        from functools import partial
-        self.cell_view_checkbox_list = []
-
-        for each in self.cells:
-            view_CB = QCheckBox(str(each))
-            view_CB.setCheckState(Qt.CheckState.Checked)
-            view_CB.released.connect(partial(self.on_checkbox_release, view_CB))
-            # Pass a reference of each checkbox to the click callback
-            self.cell_view_checkbox_list.append(view_CB)
-            self.cell_view_checkbox_layout.addWidget(view_CB)
-
-    def populate_cell_traces(self):
-        for each in self.cell_traces:
-            each.installEventFilter(self)
-            _list_widget = QListWidgetItem()
-            _list_widget.setSizeHint(QSize(each.width() / 3, each.height()))
-            self.cell_trace_scroll_area.addItem(_list_widget)
-            self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
 
     def draw_cell_outlines(self):
         brush = QBrush()
