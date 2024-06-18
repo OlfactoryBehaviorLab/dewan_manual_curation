@@ -27,14 +27,14 @@ class GuiCallbacks:
         for trace in self.trace_pointers:
             trace.setHidden(False)
 
-        self.reset_polygon_colors()
+        self.max_projection.reset_polygon_colors()
 
     def view_none(self):
         self.change_view_checkboxes(False)
         for trace in self.trace_pointers:
             trace.setHidden(True)
 
-        self.reset_polygon_colors()
+        self.max_projection.reset_polygon_colors()
 
     def on_checkbox_release(self, checkbox):
         cell_key = checkbox.text()
@@ -50,7 +50,7 @@ class GuiCallbacks:
             self.trace_pointers[cell_index].setHidden(True)
             outline_state = 0
 
-        self.change_polygon_color(cell_key, outline_state)
+        self.max_projection.change_outline_color(cell_key, outline_state)
 
     def change_view_checkboxes(self, checked=False):
         check_state = Qt.CheckState.Unchecked
@@ -62,7 +62,7 @@ class GuiCallbacks:
 
     def reset_image_zoom(self):
         self.scale = 1
-        self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
+        self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
 
     def zoom_image_in(self):
         self.zoom_image(1)
