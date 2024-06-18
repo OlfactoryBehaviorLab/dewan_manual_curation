@@ -31,8 +31,8 @@ class ManualCurationUI(GuiCallbacks, QDialog):
         self.select_all_button = None
         self.select_none_button = None
         self.export_cells_button = None
-        self.cell_selection_checkbox_list = None
-        self.cell_view_checkbox_list = None
+        self.cell_selection_checkbox_list = []
+        self.cell_view_checkbox_list = []
         # Cell View List Components
         self.cell_view_list = None
         self.cell_view_scroll_area = None
