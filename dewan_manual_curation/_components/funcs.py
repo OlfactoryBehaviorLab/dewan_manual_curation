@@ -30,3 +30,14 @@ class GuiFuncs:
             _list_widget.setSizeHint(QSize(each.width() / 3, each.height()))
             self.cell_trace_scroll_area.addItem(_list_widget)
             self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
+
+    def configure_maxproj_view(self):
+        self.max_projection_view.setInteractive(True)
+        self.max_projection_view.setMouseTracking(True)
+        self.max_projection_view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
+        self.max_projection_view.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.max_projection_view.setResizeAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
+        self.max_projection_view.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
+        self.max_projection_view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.max_projection_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.max_projection_view.viewport().installEventFilter(self)

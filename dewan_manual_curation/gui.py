@@ -222,20 +222,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         # ==Max Projection Display== #
         self.scene = QGraphicsScene()
         self.max_projection_view = QGraphicsView()
-        self.max_projection_view.setInteractive(True)
-        self.max_projection_view.setMouseTracking(True)
-        self.max_projection_view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
-        self.max_projection_view.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.max_projection_view.setResizeAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
-        self.max_projection_view.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
-        self.max_projection_view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.max_projection_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.max_projection_view.viewport().installEventFilter(self)
-
-        self.image = QImage(self.project_folder.max_projection_path)
-        self.pixmap = QPixmap.fromImage(self.image)
-        self.pixmap_item = QGraphicsPixmapItem(self.pixmap)
-        self.scene.addItem(self.pixmap_item)
+        self.configure_maxproj_view()  # TODO: Maybe Move this
 
         self.create_cell_polygons()
         self.create_cell_labels()
