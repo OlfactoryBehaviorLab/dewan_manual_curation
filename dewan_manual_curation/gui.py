@@ -4,9 +4,9 @@ from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListWidgetItem, QListWidget, QAbstractItemView, QGraphicsTextItem)
 from typing import TYPE_CHECKING
-from dewan_manual_curation.dewan_manual_curation._comps.cell_trace import CellTrace
+from dewan_manual_curation.dewan_manual_curation._components.cell_trace import CellTrace
 
-from ._comps.callbacks import GuiCallbacks
+from ._components.callbacks import GuiCallbacks
 
 
 if TYPE_CHECKING:

@@ -6,7 +6,7 @@ import pandas as pd
 from . import gui
 
 from .project_folder import ProjectFolder
-from ._comps.cell_trace import CellTrace
+from ._components.cell_trace import CellTrace
 from dewan_calcium.helpers import DewanJSON
 
 
