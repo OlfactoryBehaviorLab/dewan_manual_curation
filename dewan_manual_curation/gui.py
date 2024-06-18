@@ -149,6 +149,10 @@ class ManualCurationUI(QDialog):
         for checkbox in self.cell_view_checkbox_list:
             checkbox.setCheckState(check_state)
 
+    def reset_polygon_colors(self):
+        for cell in self.cells:
+            self.change_polygon_color(cell, 0)
+
     # ==Callbacks== #
 
     def select_none(self):
@@ -170,22 +174,30 @@ class ManualCurationUI(QDialog):
         for trace in self.trace_pointers:
             trace.setHidden(False)
 
+        self.reset_polygon_colors()
+
     def view_none(self):
-        self.change_view_checkboxes()
+        self.change_view_checkboxes(False)
         for trace in self.trace_pointers:
             trace.setHidden(True)
+
+        self.reset_polygon_colors()
 
     def on_checkbox_release(self, checkbox):
         cell_key = checkbox.text()
         cell_index = int(cell_key.split('C')[1])  # Drop leading zeros by converting to int
         check_state = checkbox.checkState()
 
+        outline_state = []
+
         if check_state == Qt.CheckState.Checked:
             self.trace_pointers[cell_index].setHidden(False)
+            outline_state = 1
         elif check_state == Qt.CheckState.Unchecked:
             self.trace_pointers[cell_index].setHidden(True)
+            outline_state = 0
 
-        self.change_polygon_color(cell_key, check_state)
+        self.change_polygon_color(cell_key, outline_state)
 
     def initUI(self):
         self.init_window_params()
@@ -384,15 +396,15 @@ class ManualCurationUI(QDialog):
         pairs = list(zip(self.cells, self.polygon_references))
         self.polygon_dict = dict(pairs)
 
-    def change_polygon_color(self, key, new_state):
+    def change_polygon_color(self, key, new_state: int):
 
         color = []
 
         polygon = self.polygon_dict[key]
 
-        if new_state is Qt.CheckState.Checked:
+        if new_state == 1:  # Selected
             color = Qt.GlobalColor.green
-        elif new_state is Qt.CheckState.Unchecked:
+        elif new_state == 0:  # Not Selected
             color = Qt.GlobalColor.red
 
         new_pen = QPen(color, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
