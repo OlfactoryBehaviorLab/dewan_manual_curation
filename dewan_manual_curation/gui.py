@@ -315,24 +315,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         polygon.setPen(new_pen)
         polygon.update()
 
-    def create_cell_polygons(self):
-
-    def create_cell_labels(self):
-        cell_labels = []
-
-        for cell in self.cells:
-            centroid = self.cell_centroids[cell]
-            _x, _y = centroid
-            _cell_label = str(int(cell.split('C')[1]))  # Little trickery to drop leading zeros
-
-            _label = QGraphicsTextItem(_cell_label)
-            _position = QPoint(_x, _y) * 4
-            _label.setPos(_position)
-
-            _label.setFont(self.default_font)
-            cell_labels.append(_label)
-
-        self.cell_labels = cell_labels
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
