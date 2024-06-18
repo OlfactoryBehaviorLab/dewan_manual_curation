@@ -32,7 +32,7 @@ class MaximumProjection(QGraphicsScene):
         self._create_reference_dict()
         self._draw_cell_outlines()
 
-    def change_polygon_color(self, key, new_state: int):
+    def change_outline_color(self, key, new_state: int):
         color = None
         polygon = self.outline_dict[key]
 
@@ -48,7 +48,7 @@ class MaximumProjection(QGraphicsScene):
 
     def reset_polygon_colors(self):
         for cell in self.cells:
-            self.change_polygon_color(cell, 0)
+            self.change_outline_color(cell, 0)
 
 
     def _load_maxproj_image(self):
