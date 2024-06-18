@@ -1,5 +1,5 @@
-from PySide6.QtCore import QPoint
-from PySide6.QtGui import QImage, QPixmap, QPolygonF
+from PySide6.QtCore import QPoint, Qt
+from PySide6.QtGui import QImage, QPixmap, QPolygonF, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QGraphicsTextItem
 
 
@@ -12,6 +12,9 @@ class MaximumProjection(QGraphicsScene):
         self.image = None
         self.pixmap = None
         self.pixmap_item = None
+
+        self.pen = None
+        self.brush = None
 
         self.cell_contours = None
         self.cell_outline_polygons = []
@@ -62,5 +65,18 @@ class MaximumProjection(QGraphicsScene):
 
             _label.setFont(self.default_font)
             self.cell_labels.append(_label)
+
+    def change_polygon_color(self, key, new_state: int):
+        color = None
+        polygon = self.polygon_dict[key]
+
+        if new_state == 1:  # Selected
+            color = Qt.GlobalColor.green
+        elif new_state == 0:  # Not Selected
+            color = Qt.GlobalColor.red
+
+        self.pen.setColor(color)  # This might just work?
+        #polygon.setPen(new_pen)
+        polygon.update()
 
 

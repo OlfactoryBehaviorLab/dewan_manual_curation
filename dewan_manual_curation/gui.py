@@ -298,23 +298,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         pairs = list(zip(self.cells, self.polygon_references))
         self.polygon_dict = dict(pairs)
 
-    def change_polygon_color(self, key, new_state: int):
-
-        color = []
-
-        polygon = self.polygon_dict[key]
-
-        if new_state == 1:  # Selected
-            color = Qt.GlobalColor.green
-        elif new_state == 0:  # Not Selected
-            color = Qt.GlobalColor.red
-
-        new_pen = QPen(color, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
-                       Qt.PenJoinStyle.RoundJoin)
-
-        polygon.setPen(new_pen)
-        polygon.update()
-
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
