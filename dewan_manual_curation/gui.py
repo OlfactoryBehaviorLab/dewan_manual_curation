@@ -212,11 +212,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.max_projection_view = QGraphicsView()
         self.configure_maxproj_view()  # TODO: Maybe Move this
 
-        self.create_cell_polygons()
-        self.create_cell_labels()
-        self.draw_cell_outlines()
-        self.create_polygon_dict()
-
         self.max_projection_view.setScene(self.scene)
 
         self.max_projection_layout.addWidget(self.max_projection_view)
@@ -274,29 +269,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self.main_layout.addLayout(self.bottom_half_container)
         self.bottom_half_container.addWidget(self.cell_trace_box)
-
-
-
-    def draw_cell_outlines(self):
-        brush = QBrush()
-        brush.setStyle(Qt.BrushStyle.NoBrush)
-        pen = QPen(Qt.GlobalColor.red, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
-                   Qt.PenJoinStyle.RoundJoin)
-
-        polygon_references = []
-
-        for i, polygon in enumerate(self.outline_polygons):
-            _polygon_reference = self.scene.addPolygon(polygon, pen, brush)
-            _label = self.cell_labels[i]
-            _label.setParentItem(_polygon_reference)
-            self.scene.addItem(_label)
-            polygon_references.append(_polygon_reference)
-
-        self.polygon_references = polygon_references
-
-    def create_polygon_dict(self):
-        pairs = list(zip(self.cells, self.polygon_references))
-        self.polygon_dict = dict(pairs)
 
 
     def init_window_params(self):
