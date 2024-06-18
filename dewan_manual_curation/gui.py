@@ -69,18 +69,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.zoom_reset = None
         #  Image View Components
         self.max_projection_view = None
-        self.scene = None
-        self.image = None
-        self.pixmap = None
-        self.pixmap_item = None
-        self.outline_polygons = None
-        self.cell_labels = None
-        self.scale = 1
-        self.direction = 0
-
-        self.trace_pointers = []
-        self.polygon_references = []
-        self.polygon_dict = {}
         self.value = []
 
         self.curated_cells = []
@@ -328,19 +316,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         polygon.update()
 
     def create_cell_polygons(self):
-        cell_outline_polygons = []
-        for cell in self.cells:  # Iterate through cells
-            polygon_verts = []
-            cell_coordinates = self.cell_contours[cell][0]  # Get the vertices for a specific cell
-            for pair in cell_coordinates:
-                _x, _y = pair
-                _point = QPoint(_x, _y) * 4
-                polygon_verts.append(_point)  # We need a list of QPoints, so generate a QPoint for each pair
-
-            _cell_polygon = QPolygonF(polygon_verts)
-            cell_outline_polygons.append(_cell_polygon)
-
-        self.outline_polygons = cell_outline_polygons
 
     def create_cell_labels(self):
         cell_labels = []
