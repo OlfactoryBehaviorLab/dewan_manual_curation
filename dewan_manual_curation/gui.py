@@ -69,10 +69,14 @@ class ManualCurationUI(QDialog):
         self.image = None
         self.pixmap = None
         self.pixmap_item = None
+        self.outline_polygons = None
+        self.cell_labels = None
         self.scale = 1
         self.direction = 0
 
         self.trace_pointers = []
+        self.polygon_references = []
+        self.polygon_dict = {}
         self.value = []
 
         self.curated_cells = []
@@ -172,13 +176,16 @@ class ManualCurationUI(QDialog):
             trace.setHidden(True)
 
     def on_checkbox_release(self, checkbox):
-        cell_index = int(checkbox.text().split('C')[1])
+        cell_key = checkbox.text()
+        cell_index = int(cell_key.split('C')[1])  # Drop leading zeros by converting to int
         check_state = checkbox.checkState()
 
         if check_state == Qt.CheckState.Checked:
             self.trace_pointers[cell_index].setHidden(False)
         elif check_state == Qt.CheckState.Unchecked:
             self.trace_pointers[cell_index].setHidden(True)
+
+        self.change_polygon_color(cell_key, check_state)
 
     def initUI(self):
         self.init_window_params()
@@ -237,16 +244,13 @@ class ManualCurationUI(QDialog):
         self.zoom_in = QPushButton("+")
         self.zoom_out = QPushButton("-")
         self.zoom_reset = QPushButton("R")
-        self.recolor_test = QPushButton('T')
         self.zoom_in.clicked.connect(self.zoom_image_in)
         self.zoom_out.clicked.connect(self.zoom_image_out)
         self.zoom_reset.clicked.connect(self.reset_image_zoom)
-        self.recolor_test.clicked.connect(self.change_colors)
 
         self.max_projection_controls.addWidget(self.zoom_in)
         self.max_projection_controls.addWidget(self.zoom_out)
         self.max_projection_controls.addWidget(self.zoom_reset)
-        self.max_projection_controls.addWidget(self.recolor_test)
         self.max_projection_layout.addLayout(self.max_projection_controls)
 
         # ==Max Projection Display== #
@@ -270,6 +274,7 @@ class ManualCurationUI(QDialog):
         self.create_cell_polygons()
         self.create_cell_labels()
         self.draw_cell_outlines()
+        self.create_polygon_dict()
 
         self.max_projection_view.setScene(self.scene)
 
@@ -354,7 +359,7 @@ class ManualCurationUI(QDialog):
         for each in self.cell_traces:
             each.installEventFilter(self)
             _list_widget = QListWidgetItem()
-            _list_widget.setSizeHint(QSize(each.width()/3, each.height()))
+            _list_widget.setSizeHint(QSize(each.width() / 3, each.height()))
             self.cell_trace_scroll_area.addItem(_list_widget)
             self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
 
@@ -362,23 +367,39 @@ class ManualCurationUI(QDialog):
         brush = QBrush()
         brush.setStyle(Qt.BrushStyle.NoBrush)
         pen = QPen(Qt.GlobalColor.red, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
-                           Qt.PenJoinStyle.RoundJoin)
+                   Qt.PenJoinStyle.RoundJoin)
 
-        self.polygon_pointers = []
+        polygon_references = []
 
         for i, polygon in enumerate(self.outline_polygons):
             _polygon_reference = self.scene.addPolygon(polygon, pen, brush)
             _label = self.cell_labels[i]
             _label.setParentItem(_polygon_reference)
             self.scene.addItem(_label)
-            self.polygon_pointers.append(_polygon_reference)
+            polygon_references.append(_polygon_reference)
 
-    def change_colors(self):
-        for pgon in self.polygon_pointers:
-            pen = QPen(Qt.GlobalColor.green, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
+        self.polygon_references = polygon_references
+
+    def create_polygon_dict(self):
+        pairs = list(zip(self.cells, self.polygon_references))
+        self.polygon_dict = dict(pairs)
+
+    def change_polygon_color(self, key, new_state):
+
+        color = []
+
+        polygon = self.polygon_dict[key]
+
+        if new_state is Qt.CheckState.Checked:
+            color = Qt.GlobalColor.green
+        elif new_state is Qt.CheckState.Unchecked:
+            color = Qt.GlobalColor.red
+
+        new_pen = QPen(color, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
                        Qt.PenJoinStyle.RoundJoin)
-            pgon.setPen(pen)
-            pgon.update()
+
+        polygon.setPen(new_pen)
+        polygon.update()
 
     def create_cell_polygons(self):
         cell_outline_polygons = []
@@ -411,7 +432,6 @@ class ManualCurationUI(QDialog):
             cell_labels.append(_label)
 
         self.cell_labels = cell_labels
-
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
