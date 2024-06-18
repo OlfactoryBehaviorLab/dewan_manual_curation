@@ -77,6 +77,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self.curated_cells = []
 
+        self.init_window_params()
         self.initUI()
 
     #  Function Overloads
@@ -111,24 +112,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
             self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
             self.scale = 1
 
-    # ===Class Functions=== #
-    def zoom_image(self, steps: int):
-        if steps != self.direction:
-            self.scale = 1
-            self.direction = steps
-
-        self.scale += (SCALE_FACTOR * steps)
-        self.max_projection_view.scale(self.scale, self.scale)
-
-    def get_trace_pointers(self):
-        self.trace_pointers = []
-
-        for trace in range(self.cell_trace_scroll_area.count()):
-            _trace = self.cell_trace_scroll_area.item(trace)
-            self.trace_pointers.append(_trace)
-
     def initUI(self):
-        self.init_window_params()
 
         # ==MAIN LAYOUT== #
         self.main_layout = QVBoxLayout()
@@ -257,13 +241,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.main_layout.addLayout(self.bottom_half_container)
         self.bottom_half_container.addWidget(self.cell_trace_box)
 
-    def init_window_params(self):
-        self.setWindowTitle('Dewan Manual Curation')
-        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.setFont(self.default_font)
-        self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
-        self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
-        self.activateWindow()
+
 
     def closeEvent(self, e):
         self.reject()

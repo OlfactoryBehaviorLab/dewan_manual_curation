@@ -2,10 +2,11 @@
 
 
 from PySide6.QtCore import Qt, QSize
-from PySide6.QtWidgets import QCheckBox, QListWidgetItem
+from PySide6.QtWidgets import QCheckBox, QListWidgetItem, QGraphicsView, QSizePolicy
 from functools import partial
 
 
+# noinspection PyUnresolvedReferences
 class GuiFuncs:
     def populate_selection_list(self):
         for each in self.cells:
@@ -31,6 +32,19 @@ class GuiFuncs:
             self.cell_trace_scroll_area.addItem(_list_widget)
             self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
 
+    def zoom_image(self, steps: int):
+        if steps != self.direction:
+            self.scale = 1
+            self.direction = steps
+
+        self.scale += (self.scale_factor * steps)
+        self.max_projection_view.scale(self.scale, self.scale)
+
+    def get_trace_pointers(self):
+        for trace in range(self.cell_trace_scroll_area.count()):
+            _trace = self.cell_trace_scroll_area.item(trace)
+            self.trace_pointers.append(_trace)
+
     def configure_maxproj_view(self):
         self.max_projection_view.setInteractive(True)
         self.max_projection_view.setMouseTracking(True)
@@ -41,3 +55,11 @@ class GuiFuncs:
         self.max_projection_view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.max_projection_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.max_projection_view.viewport().installEventFilter(self)
+
+    def init_window_params(self):
+        self.setWindowTitle('Dewan Manual Curation')
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.setFont(self.default_font)
+        self.setWindowFlag(Qt.WindowMinimizeButtonHint, True)
+        self.setWindowFlag(Qt.WindowMaximizeButtonHint, True)
+        self.activateWindow()
