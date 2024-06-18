@@ -59,3 +59,13 @@ class GuiCallbacks:
 
         for checkbox in self.cell_view_checkbox_list:
             checkbox.setCheckState(check_state)
+
+    def reset_image_zoom(self):
+        self.scale = 1
+        self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
+
+    def zoom_image_in(self):
+        self.zoom_image(1)
+
+    def zoom_image_out(self):
+        self.zoom_image(-1)

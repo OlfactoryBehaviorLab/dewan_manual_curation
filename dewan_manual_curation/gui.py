@@ -64,6 +64,8 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.max_projection_box = None
         self.cell_trace_box = None
         #  Max Projection Controls
+        self.scale = 1
+        self.direction = 0
         self.zoom_in = None
         self.zoom_out = None
         self.zoom_reset = None
@@ -116,15 +118,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.scale += (SCALE_FACTOR * steps)
         self.max_projection_view.scale(self.scale, self.scale)
 
-    def reset_image_zoom(self):
-        self.scale = 1
-        self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
-
-    def zoom_image_in(self):
-        self.zoom_image(1)
-
-    def zoom_image_out(self):
-        self.zoom_image(-1)
 
     def get_trace_pointers(self):
         self.trace_pointers = []
