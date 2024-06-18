@@ -20,7 +20,6 @@ class MaximumProjection(QGraphicsScene):
         self.pen = None
         self.brush = None
 
-        self.cell_contours = None
         self.cell_outline_polygons = []
         self.cell_labels = []
 
@@ -31,8 +30,8 @@ class MaximumProjection(QGraphicsScene):
         self._load_maxproj_image()
         self._create_outline_polygons()
         self._create_cell_labels()
-        self._create_reference_dict()
         self._draw_cell_outlines()
+        self._create_reference_dict()
 
     def change_outline_color(self, key, new_state: int):
         color = None
@@ -44,8 +43,7 @@ class MaximumProjection(QGraphicsScene):
             color = Qt.GlobalColor.red
 
         self.pen.setColor(color)  # This might just work?
-        #polygon.setPen(new_pen)
-
+        polygon.setPen(self.pen)
         polygon.update()
 
     def reset_polygon_colors(self):
@@ -72,7 +70,7 @@ class MaximumProjection(QGraphicsScene):
             self.cell_outline_polygons.append(_cell_polygon)
 
     def _create_reference_dict(self):
-        self.outline_dict = dict(list(zip(self.name, self.cell_outline_references)))
+        self.outline_dict = dict(list(zip(self.cells, self.cell_outline_references)))
 
     def _create_cell_labels(self):
         for cell in self.cells:
@@ -93,9 +91,9 @@ class MaximumProjection(QGraphicsScene):
         self.pen = QPen(Qt.GlobalColor.red, 2, Qt.PenStyle.SolidLine, Qt.PenCapStyle.SquareCap,
                         Qt.PenJoinStyle.RoundJoin)
 
-        for i, polygon in enumerate(self.outline_polygons):
-            _polygon_reference = self.scene.addPolygon(polygon, self.pen, self.brush)
+        for i, polygon in enumerate(self.cell_outline_polygons):
+            _polygon_reference = self.addPolygon(polygon, self.pen, self.brush)
             _label = self.cell_labels[i]
             _label.setParentItem(_polygon_reference)
-            self.scene.addItem(_label)
+            self.addItem(_label)
             self.cell_outline_references.append(_polygon_reference)
