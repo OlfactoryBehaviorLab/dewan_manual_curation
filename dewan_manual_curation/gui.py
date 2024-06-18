@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
 from ._components.cell_trace import CellTrace
 from ._components.callbacks import GuiCallbacks
 from ._components.funcs import GuiFuncs
-
+from ._components.maxprojection import MaximumProjection
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -43,6 +43,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         # Cell Trace List Components
         self.cell_trace_scroll_area_contents = None
         self.cell_trace_scroll_area = None
+        self.trace_pointers = []
         #  Layouts
         self.main_layout = None
         self.top_half_container = None
@@ -71,6 +72,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.zoom_reset = None
         #  Image View Components
         self.max_projection_view = None
+        self.max_projection = None
         self.value = []
 
         self.curated_cells = []
@@ -90,7 +92,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
                     self.zoom_image(steps)
                     return True
         elif type(event) is QShowEvent and obj is self.max_projection_view.viewport():
-            self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
+            self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
             # We don't actually wanna handle this event, just needed to run this with it
         return False
 
@@ -106,7 +108,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
     def resizeEvent(self, event):
         event.accept()
         if self.scale == 1:
-            self.max_projection_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
+            self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
             self.scale = 1
 
     # ===Class Functions=== #
@@ -118,14 +120,12 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.scale += (SCALE_FACTOR * steps)
         self.max_projection_view.scale(self.scale, self.scale)
 
-
     def get_trace_pointers(self):
         self.trace_pointers = []
 
         for trace in range(self.cell_trace_scroll_area.count()):
             _trace = self.cell_trace_scroll_area.item(trace)
             self.trace_pointers.append(_trace)
-
 
     def initUI(self):
         self.init_window_params()
@@ -194,11 +194,12 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.max_projection_layout.addLayout(self.max_projection_controls)
 
         # ==Max Projection Display== #
-        self.scene = QGraphicsScene()
+        self.max_projection = MaximumProjection(self.cells, self.cell_contours,
+                                                self.project_folder.max_projection_path)
         self.max_projection_view = QGraphicsView()
         self.configure_maxproj_view()  # TODO: Maybe Move this
 
-        self.max_projection_view.setScene(self.scene)
+        self.max_projection_view.setScene(self.max_projection)
 
         self.max_projection_layout.addWidget(self.max_projection_view)
 
@@ -255,7 +256,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self.main_layout.addLayout(self.bottom_half_container)
         self.bottom_half_container.addWidget(self.cell_trace_box)
-
 
     def init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')

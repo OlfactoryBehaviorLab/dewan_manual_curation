@@ -50,7 +50,6 @@ class MaximumProjection(QGraphicsScene):
         for cell in self.cells:
             self.change_outline_color(cell, 0)
 
-
     def _load_maxproj_image(self):
         self.image = QImage(self.image_path)
         self.pixmap = QPixmap.fromImage(self.image)
