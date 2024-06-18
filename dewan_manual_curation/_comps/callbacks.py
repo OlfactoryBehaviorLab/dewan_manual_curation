@@ -1,3 +1,5 @@
+""" Parent Class for ManualCurationUI to provide callback methods """
+
 from PySide6.QtCore import Qt
 
 CHECKED = Qt.CheckState.Checked

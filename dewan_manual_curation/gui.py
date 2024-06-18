@@ -1,18 +1,20 @@
-from PySide6.QtCore import Qt, QRect, QSize, QPoint
-from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent, QPolygonF, QBrush, QColor, QPen
+from PySide6.QtCore import Qt, QSize, QPoint
+from PySide6.QtGui import QFont, QPixmap, QImage, QWheelEvent, QShowEvent, QPolygonF, QBrush, QPen
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout,
                                QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
-                               QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListView,
-                               QListWidgetItem, QListWidget, QAbstractItemView, QGraphicsTextItem)
+                               QGraphicsPixmapItem, QGraphicsView, QGraphicsScene, QCheckBox, QWidget, QListWidgetItem, QListWidget, QAbstractItemView, QGraphicsTextItem)
 from typing import TYPE_CHECKING
-from .cell_trace import CellTrace
+from dewan_manual_curation.dewan_manual_curation._comps.cell_trace import CellTrace
+
+from ._comps.callbacks import GuiCallbacks
+
 
 if TYPE_CHECKING:
     from .project_folder import ProjectFolder
 SCALE_FACTOR = 0.01
 
 
-class ManualCurationUI(QDialog):
+class ManualCurationUI(GuiCallbacks, QDialog):
     def __init__(self, project_folder: 'ProjectFolder', cell_names, cell_traces, cell_contours, cell_centroids):
 
         super().__init__()
@@ -155,49 +157,6 @@ class ManualCurationUI(QDialog):
 
     # ==Callbacks== #
 
-    def select_none(self):
-        for checkbox in self.cell_selection_checkbox_list:
-            checkbox.setCheckState(Qt.CheckState.Unchecked)
-
-    def select_all(self):
-        for checkbox in self.cell_selection_checkbox_list:
-            checkbox.setCheckState(Qt.CheckState.Checked)
-
-    def export_cells(self):
-        for checkbox in self.cell_selection_checkbox_list:
-            if checkbox.checkState() is Qt.CheckState.Checked:
-                self.curated_cells.append(checkbox.text())
-        self.accept()
-
-    def view_all(self):
-        self.change_view_checkboxes(True)
-        for trace in self.trace_pointers:
-            trace.setHidden(False)
-
-        self.reset_polygon_colors()
-
-    def view_none(self):
-        self.change_view_checkboxes(False)
-        for trace in self.trace_pointers:
-            trace.setHidden(True)
-
-        self.reset_polygon_colors()
-
-    def on_checkbox_release(self, checkbox):
-        cell_key = checkbox.text()
-        cell_index = int(cell_key.split('C')[1])  # Drop leading zeros by converting to int
-        check_state = checkbox.checkState()
-
-        outline_state = []
-
-        if check_state == Qt.CheckState.Checked:
-            self.trace_pointers[cell_index].setHidden(False)
-            outline_state = 1
-        elif check_state == Qt.CheckState.Unchecked:
-            self.trace_pointers[cell_index].setHidden(True)
-            outline_state = 0
-
-        self.change_polygon_color(cell_key, outline_state)
 
     def initUI(self):
         self.init_window_params()

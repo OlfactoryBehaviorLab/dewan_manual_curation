@@ -4,8 +4,9 @@ from shapely import Polygon
 import pandas as pd
 
 from . import gui
+
 from .project_folder import ProjectFolder
-from .cell_trace import CellTrace
+from ._comps.cell_trace import CellTrace
 from dewan_calcium.helpers import DewanJSON
 
 
