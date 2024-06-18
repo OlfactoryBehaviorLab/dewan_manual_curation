@@ -40,8 +40,8 @@ def launch_gui(cell_trace_data_override=None, cell_names_override=None,
         app = QApplication([])
     qdarktheme.setup_theme('dark')
 
-    window = gui.ManualCurationUI(project_folder, cell_names, cell_traces, cell_contours,
-                                  cell_centroids)
+    window = gui.ManualCurationUI(cell_names, cell_traces, cell_contours,
+                                  cell_centroids, project_folder.max_projection_path)
     window.show()
 
     return_val = app.exec()
