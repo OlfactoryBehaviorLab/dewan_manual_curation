@@ -46,6 +46,8 @@ def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell
 
     if return_val == 0:  # 0: Success! | 1: Failure!
         return window.curated_cells
+    else:
+        return None
 
 
 def get_data(project_folder, cell_trace_data_override, cell_names_override, cell_contours_override):

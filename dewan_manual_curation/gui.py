@@ -37,6 +37,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.cell_trace_scroll_area_contents = None
         self.cell_trace_scroll_area = None
         self.trace_pointers = []
+        self.trace_pointers_dict = {}
         #  Layouts
         self.main_layout = None
         self.top_half_container = None

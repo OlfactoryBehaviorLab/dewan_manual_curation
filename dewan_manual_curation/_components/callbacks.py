@@ -38,16 +38,15 @@ class GuiCallbacks:
 
     def on_checkbox_release(self, checkbox):
         cell_key = checkbox.text()
-        cell_index = int(cell_key.split('C')[1])  # Drop leading zeros by converting to int
         check_state = checkbox.checkState()
 
         outline_state = []
 
         if check_state == CHECKED:
-            self.trace_pointers[cell_index].setHidden(False)
+            self.trace_pointers_dict[cell_key].setHidden(False)
             outline_state = 1
         elif check_state == UNCHECKED:
-            self.trace_pointers[cell_index].setHidden(True)
+            self.trace_pointers_dict[cell_key].setHidden(True)
             outline_state = 0
 
         self.max_projection.change_outline_color(cell_key, outline_state)
