@@ -114,10 +114,9 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         # ==TOP HALF== #
         self.top_half_container = QHBoxLayout()  # Holds the cell list and max projection
-
         # ==Cell Selection List== #
         self.cell_list_box = QGroupBox("Cells")
-        self.cell_list_box.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        self.cell_list_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.cell_list_box.setMaximumWidth(250)
         self.cell_list_layout = QVBoxLayout()
         self.cell_list_box.setLayout(self.cell_list_layout)
@@ -189,7 +188,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         # ==CELL TRACE REGION== #
         self.cell_trace_box = QGroupBox("Traces")  # Create the cell trace box and add it to the layout
-        self.cell_trace_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.cell_trace_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.cell_trace_box.setMinimumHeight(300)
 
         self.cell_trace_box_layout = QHBoxLayout()
@@ -232,8 +231,8 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self._populate_cell_traces()
         self._get_trace_pointers()
 
-        self.main_layout.addLayout(self.bottom_half_container)
         self.bottom_half_container.addWidget(self.cell_trace_box)
+        self.main_layout.addLayout(self.bottom_half_container)
 
     def closeEvent(self, e):
         self.reject()
