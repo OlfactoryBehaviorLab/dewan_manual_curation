@@ -100,12 +100,12 @@ class MaximumProjection(QGraphicsScene):
             self.addItem(_label)
             self.cell_outline_references.append(_polygon_reference)
 
-    def generate_new_centroids(self):
+    def _generate_new_centroids(self):
         centroids = []
-        for cell in self.names:
+        for cell in self.cells:
             polygon_verts = self.cell_contours[cell][0]
             polygon = Polygon(polygon_verts)
             new_centroid = (polygon.centroid.x, polygon.centroid.y)
             centroids.append(new_centroid)
 
-        self.new_centroids_dict = dict(list(zip(self.names, centroids)))
+        self.new_centroids = dict(list(zip(self.cells, centroids)))

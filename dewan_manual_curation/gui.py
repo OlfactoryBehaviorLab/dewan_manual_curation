@@ -72,7 +72,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self.curated_cells = []
 
-        self.init_window_params()
+        self._init_window_params()
         self.initUI()
 
     #  Function Overloads
@@ -85,7 +85,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
                 if event.modifiers() == Qt.KeyboardModifier.ControlModifier:
                     num_degrees = event.angleDelta() / 8
                     steps = int(num_degrees.y() / 15)
-                    self.zoom_image(steps)
+                    self._zoom_image(steps)
                     return True
         elif type(event) is QShowEvent and obj is self.max_projection_view.viewport():
             self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
@@ -125,7 +125,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self.cell_list = QWidget()
         self.cell_select_checkbox_layout = QVBoxLayout(self.cell_list)
-        self.populate_selection_list()
+        self._populate_selection_list()
 
         self.cell_scroll_area = QScrollArea()  # Add the scroll area to the layout
         self.cell_scroll_area.setWidget(self.cell_list)
@@ -202,7 +202,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self.cell_view_list = QWidget()
         self.cell_view_checkbox_layout = QVBoxLayout(self.cell_view_list)
-        self.populate_view_list()
+        self._populate_view_list()
 
         self.cell_view_scroll_area = QScrollArea()
         self.cell_view_scroll_area.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -230,8 +230,8 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
                                                   QSizePolicy.Policy.MinimumExpanding)
         self.cell_trace_scroll_area.setSpacing(2)
         self.cell_trace_scroll_area.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
-        self.populate_cell_traces()
-        self.get_trace_pointers()
+        self._populate_cell_traces()
+        self._get_trace_pointers()
 
         self.main_layout.addLayout(self.bottom_half_container)
         self.bottom_half_container.addWidget(self.cell_trace_box)
