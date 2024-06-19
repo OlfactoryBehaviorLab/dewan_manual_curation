@@ -13,7 +13,7 @@ class MaximumProjection(QGraphicsScene):
         self.cell_contours = cell_contours
         self.image_path = max_projection_path
 
-        self.new_centroids_dict = None
+        self.new_centroids = None
 
         self.image = None
         self.pixmap = None
@@ -29,6 +29,7 @@ class MaximumProjection(QGraphicsScene):
         self.cell_outline_references = []
         self.outline_dict = {}
 
+        self._generate_new_centroids()
         self._load_maxproj_image()
         self._create_outline_polygons()
         self._create_cell_labels()
@@ -76,7 +77,7 @@ class MaximumProjection(QGraphicsScene):
 
     def _create_cell_labels(self):
         for cell in self.cells:
-            centroid = self.cell_centroids[cell]
+            centroid = self.new_centroids[cell]
             _x, _y = centroid
             _cell_label = str(int(cell.split('C')[1]))  # Little trickery to drop leading zeros
 

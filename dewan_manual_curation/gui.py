@@ -173,10 +173,9 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.max_projection_layout.addLayout(self.max_projection_controls)
 
         # ==Max Projection Display== #
-        self.max_projection = MaximumProjection(self.cells, self.cell_contours, self.cell_centroids,
-                                                self.maxproj_path)
+        self.max_projection = MaximumProjection(self.cells, self.cell_contours, self.maxproj_path)
         self.max_projection_view = QGraphicsView()
-        self.configure_maxproj_view()  # TODO: Maybe Move this
+        self._configure_maxproj_view()  # TODO: Maybe Move this
 
         self.max_projection_view.setScene(self.max_projection)
 
