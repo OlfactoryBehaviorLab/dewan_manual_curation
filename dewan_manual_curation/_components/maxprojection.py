@@ -1,17 +1,19 @@
 from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QImage, QPixmap, QPolygonF, QPen, QBrush, QFont
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QGraphicsTextItem
+from shapely import Polygon
 
 
 class MaximumProjection(QGraphicsScene):
-    def __init__(self, cell_names, cell_contours, cell_centroids, max_projection_path):
+    def __init__(self, cell_names, cell_contours, max_projection_path):
         super().__init__()
 
         self.default_font = QFont("Arial", 12, 1)
         self.cells = cell_names
         self.cell_contours = cell_contours
-        self.cell_centroids = cell_centroids
         self.image_path = max_projection_path
+
+        self.new_centroids_dict = None
 
         self.image = None
         self.pixmap = None
@@ -97,3 +99,13 @@ class MaximumProjection(QGraphicsScene):
             _label.setParentItem(_polygon_reference)
             self.addItem(_label)
             self.cell_outline_references.append(_polygon_reference)
+
+    def generate_new_centroids(self):
+        centroids = []
+        for cell in self.names:
+            polygon_verts = self.cell_contours[cell][0]
+            polygon = Polygon(polygon_verts)
+            new_centroid = (polygon.centroid.x, polygon.centroid.y)
+            centroids.append(new_centroid)
+
+        self.new_centroids_dict = dict(list(zip(self.names, centroids)))

@@ -89,3 +89,13 @@ class CellTrace(FigureCanvasQTAgg):
 
         return scaled_data
 
+    @staticmethod
+    def generate_cell_traces(cell_trace_data, cell_names):
+        cell_traces = []
+        for cell in cell_names:
+            data = cell_trace_data[cell].values
+            _cell_trace = CellTrace(reference_line=True)
+            _cell_trace.plot_trace(data, cell)
+            cell_traces.append(_cell_trace)
+
+        return cell_traces

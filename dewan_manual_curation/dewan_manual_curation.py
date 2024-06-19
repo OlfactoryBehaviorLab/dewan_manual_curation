@@ -59,31 +59,5 @@ def launch_gui(cell_trace_data_override=None, cell_names_override=None,
         return window.curated_cells
 
 
-def generate_cell_traces(cell_trace_data, cell_names):
-    cell_traces = []
-    for cell in cell_names:
-        data = cell_trace_data[cell].values
-        _cell_trace = CellTrace(reference_line=True)
-        _cell_trace.plot_trace(data, cell)
-        cell_traces.append(_cell_trace)
-
-    return cell_traces
-
-
-def generate_new_centroids(cell_names, cell_contours):
-    cell_keys = cell_contours.keys()
-
-    centroids = []
-    for cell in cell_keys:
-        polygon_verts = cell_contours[cell][0]
-        polygon = Polygon(polygon_verts)
-        new_centroid = (polygon.centroid.x, polygon.centroid.y)
-        centroids.append(new_centroid)
-
-    centroids_dict = dict(list(zip(cell_names, centroids)))
-
-    return centroids_dict
-
-
 if __name__ == '__main__':
     launch_gui()
