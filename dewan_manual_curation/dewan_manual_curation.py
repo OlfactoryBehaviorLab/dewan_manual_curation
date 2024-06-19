@@ -22,6 +22,12 @@ from dewan_calcium.helpers import DewanJSON
 def launch_gui(cell_trace_data_override=None, cell_names_override=None,
                cell_contours_override=None):
 
+    cell_traces = []
+    cell_props = []
+    cell_names = []
+    cell_contours = []
+
+
     project_folder = ProjectFolder(project_dir='C:/Projects/Test_Data/VGLUT-20')
 
     if cell_trace_data_override is None:
@@ -49,7 +55,7 @@ def launch_gui(cell_trace_data_override=None, cell_names_override=None,
     qdarktheme.setup_theme('dark')
 
     window = gui.ManualCurationUI(cell_names, cell_traces, cell_contours,
-                                  cell_centroids, project_folder.max_projection_path)
+                                  project_folder.max_projection_path)
     window.show()
 
     return_val = app.exec()

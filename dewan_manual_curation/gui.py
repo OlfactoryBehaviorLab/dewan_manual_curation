@@ -11,14 +11,13 @@ from ._components.maxprojection import MaximumProjection
 
 class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
-    def __init__(self, cell_names, cell_traces, cell_contours, cell_centroids, maxproj_path):
+    def __init__(self, cell_names, cell_traces, cell_contours, maxproj_path):
 
         super().__init__()
         self.default_font = QFont("Arial", 12)
         self.cells = cell_names
         self.cell_traces = cell_traces
         self.cell_contours = cell_contours
-        self.cell_centroids = cell_centroids
         self.maxproj_path = maxproj_path
 
         #  Cell Selection List Components
