@@ -45,6 +45,8 @@ class GuiFuncs:
             _trace = self.cell_trace_scroll_area.item(trace)
             self.trace_pointers.append(_trace)
 
+        self.trace_pointers_dict = dict(list(zip(self.cells, self.trace_pointers)))
+
     def _configure_maxproj_view(self):
         self.max_projection_view.setInteractive(True)
         self.max_projection_view.setMouseTracking(True)
