@@ -73,6 +73,9 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self._init_window_params()
         self.initUI()
+        self._configure_maxproj_view()
+        self._populate_cell_traces()
+        self._get_trace_pointers()
 
     #  Function Overloads
     def eventFilter(self, obj, event):
@@ -89,6 +92,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         elif type(event) is QShowEvent and obj is self.max_projection_view.viewport():
             self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
             # We don't actually wanna handle this event, just needed to run this with it
+
         return False
 
     def keyPressEvent(self, event):
@@ -173,7 +177,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         # ==Max Projection Display== #
         self.max_projection = MaximumProjection(self.cells, self.cell_contours, self.maxproj_path)
         self.max_projection_view = QGraphicsView()
-        self._configure_maxproj_view()  # TODO: Maybe Move this
 
         self.max_projection_view.setScene(self.max_projection)
 
@@ -219,7 +222,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.cell_trace_box_layout.addLayout(self.cell_view_layout)
 
         # ==Cell Trace View== #
-        # TODO: reduce scroll bar step size
         self.cell_trace_scroll_area = QListWidget()
         self.cell_trace_box_layout.addWidget(self.cell_trace_scroll_area)
         self.cell_trace_scroll_area.setSizeAdjustPolicy(QListWidget.SizeAdjustPolicy.AdjustToContents)
@@ -228,8 +230,6 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.cell_trace_scroll_area.setSpacing(2)
         self.cell_trace_scroll_area.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.cell_trace_scroll_area.verticalScrollBar().setSingleStep(7)
-        self._populate_cell_traces()
-        self._get_trace_pointers()
 
         self.bottom_half_container.addWidget(self.cell_trace_box)
         self.main_layout.addLayout(self.bottom_half_container)
