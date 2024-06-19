@@ -9,24 +9,51 @@ Version: 2.0
 """
 
 import qdarktheme
-from PySide6.QtWidgets import QApplication
 import pandas as pd
-
-from . import gui
-
+from PySide6.QtWidgets import QApplication
+# Our Libraries
+from .gui import ManualCurationUI
 from .project_folder import ProjectFolder
 from ._components.cell_trace import CellTrace
 from dewan_calcium.helpers import DewanJSON
 
 
-def launch_gui(cell_trace_data_override=None, cell_names_override=None,
+def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell_names_override=None,
                cell_contours_override=None):
 
     cell_trace_data = []
 
-    project_folder = ProjectFolder(project_dir='C:/Projects/Test_Data/VGLUT-20')
+    if project_folder_override is None:
+        project_folder = ProjectFolder(project_dir='C:/Projects/Test_Data/VGLUT-20')
+    else:
+        project_folder = project_folder_override
+
+    cell_trace_data, cell_names, cell_contours = get_data(project_folder, cell_trace_data_override,
+                                                          cell_names_override, cell_contours_override)
+
+    cell_traces = CellTrace.generate_cell_traces(cell_trace_data, cell_names)
+
+    app = QApplication.instance()
+
+    if not app:
+        app = QApplication([])
+
+    qdarktheme.setup_theme('dark')
+
+    window = ManualCurationUI(cell_names, cell_traces, cell_contours,
+                              project_folder.max_projection_path)
+    window.show()
+
+    return_val = app.exec()
+
+    if return_val == 0:  # 0: Success! | 1: Failure!
+        return window.curated_cells
+
+
+def get_data(project_folder, cell_trace_data_override, cell_names_override, cell_contours_override):
 
     if cell_trace_data_override is None:
+        cell_trace_data = []
         pass  # Load cell trace data from pickle
     else:
         cell_trace_data = cell_trace_data_override
@@ -42,21 +69,7 @@ def launch_gui(cell_trace_data_override=None, cell_names_override=None,
     else:
         cell_contours = cell_contours_override
 
-    cell_traces = CellTrace.generate_cell_traces(cell_trace_data, cell_names)
-
-    app = QApplication.instance()
-    if not app:
-        app = QApplication([])
-    qdarktheme.setup_theme('dark')
-
-    window = gui.ManualCurationUI(cell_names, cell_traces, cell_contours,
-                                  project_folder.max_projection_path)
-    window.show()
-
-    return_val = app.exec()
-
-    if return_val == 0:  # Success!
-        return window.curated_cells
+    return cell_trace_data, cell_names, cell_contours
 
 
 if __name__ == '__main__':
