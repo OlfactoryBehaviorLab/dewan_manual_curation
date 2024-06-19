@@ -1,3 +1,4 @@
+""" Maximum Projection QGraphicsScene extension """
 from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QImage, QPixmap, QPolygonF, QPen, QBrush, QFont
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QGraphicsTextItem

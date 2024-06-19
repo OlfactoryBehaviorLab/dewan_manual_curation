@@ -21,10 +21,8 @@ from dewan_calcium.helpers import DewanJSON
 def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell_names_override=None,
                cell_contours_override=None):
 
-    cell_trace_data = []
-
     if project_folder_override is None:
-        project_folder = ProjectFolder(project_dir='C:/Projects/Test_Data/VGLUT-20')
+        project_folder = ProjectFolder()
     else:
         project_folder = project_folder_override
 
