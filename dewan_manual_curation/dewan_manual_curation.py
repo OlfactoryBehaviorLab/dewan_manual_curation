@@ -22,11 +22,7 @@ from dewan_calcium.helpers import DewanJSON
 def launch_gui(cell_trace_data_override=None, cell_names_override=None,
                cell_contours_override=None):
 
-    cell_traces = []
-    cell_props = []
-    cell_names = []
-    cell_contours = []
-
+    cell_trace_data = []
 
     project_folder = ProjectFolder(project_dir='C:/Projects/Test_Data/VGLUT-20')
 
@@ -46,8 +42,7 @@ def launch_gui(cell_trace_data_override=None, cell_names_override=None,
     else:
         cell_contours = cell_contours_override
 
-    #cell_traces = generate_cell_traces(cell_trace_data, cell_names)
-
+    cell_traces = CellTrace.generate_cell_traces(cell_trace_data, cell_names)
 
     app = QApplication.instance()
     if not app:
