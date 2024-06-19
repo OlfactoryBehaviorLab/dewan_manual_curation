@@ -8,14 +8,14 @@ from functools import partial
 
 # noinspection PyUnresolvedReferences
 class GuiFuncs:
-    def populate_selection_list(self):
+    def _populate_selection_list(self):
         for each in self.cells:
             selection_CB = QCheckBox(str(each))
             selection_CB.setCheckState(Qt.CheckState.Checked)
             self.cell_selection_checkbox_list.append(selection_CB)
             self.cell_select_checkbox_layout.addWidget(selection_CB)
 
-    def populate_view_list(self):
+    def _populate_view_list(self):
         for each in self.cells:
             view_CB = QCheckBox(str(each))
             view_CB.setCheckState(Qt.CheckState.Checked)
@@ -24,7 +24,7 @@ class GuiFuncs:
             self.cell_view_checkbox_list.append(view_CB)
             self.cell_view_checkbox_layout.addWidget(view_CB)
 
-    def populate_cell_traces(self):
+    def _populate_cell_traces(self):
         for each in self.cell_traces:
             each.installEventFilter(self)
             _list_widget = QListWidgetItem()
@@ -32,7 +32,7 @@ class GuiFuncs:
             self.cell_trace_scroll_area.addItem(_list_widget)
             self.cell_trace_scroll_area.setItemWidget(_list_widget, each)
 
-    def zoom_image(self, steps: int):
+    def _zoom_image(self, steps: int):
         if steps != self.direction:
             self.scale = 1
             self.direction = steps
@@ -40,12 +40,12 @@ class GuiFuncs:
         self.scale += (self.scale_factor * steps)
         self.max_projection_view.scale(self.scale, self.scale)
 
-    def get_trace_pointers(self):
+    def _get_trace_pointers(self):
         for trace in range(self.cell_trace_scroll_area.count()):
             _trace = self.cell_trace_scroll_area.item(trace)
             self.trace_pointers.append(_trace)
 
-    def configure_maxproj_view(self):
+    def _configure_maxproj_view(self):
         self.max_projection_view.setInteractive(True)
         self.max_projection_view.setMouseTracking(True)
         self.max_projection_view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
@@ -56,7 +56,7 @@ class GuiFuncs:
         self.max_projection_view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.max_projection_view.viewport().installEventFilter(self)
 
-    def init_window_params(self):
+    def _init_window_params(self):
         self.setWindowTitle('Dewan Manual Curation')
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.setFont(self.default_font)
