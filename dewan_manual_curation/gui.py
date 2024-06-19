@@ -228,6 +228,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
                                                   QSizePolicy.Policy.MinimumExpanding)
         self.cell_trace_scroll_area.setSpacing(2)
         self.cell_trace_scroll_area.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.cell_trace_scroll_area.verticalScrollBar().setSingleStep(7)
         self._populate_cell_traces()
         self._get_trace_pointers()
 

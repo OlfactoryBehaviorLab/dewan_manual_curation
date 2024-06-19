@@ -83,7 +83,6 @@ class CellTrace(FigureCanvasQTAgg):
 
         _min, _max = feature_range
 
-        # TODO: I will need to rework this for a pandas Series
         scaler = MinMaxScaler(feature_range=(_min, _max))
         scaled_data = scaler.fit_transform(trace_data.reshape(-1, 1)).ravel()
 
