@@ -64,7 +64,7 @@ class GuiCallbacks:
         self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
 
     def zoom_image_in(self):
-        self.zoom_image(1)
+        self._zoom_image(1)
 
     def zoom_image_out(self):
-        self.zoom_image(-1)
+        self._zoom_image(-1)
