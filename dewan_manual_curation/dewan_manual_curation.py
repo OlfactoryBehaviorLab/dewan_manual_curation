@@ -15,7 +15,7 @@ from PySide6.QtWidgets import QApplication
 from .gui import ManualCurationUI
 from dewan_calcium.helpers.project_folder import ProjectFolder
 from ._components.cell_trace import CellTrace
-from dewan_calcium.helpers import DewanJSON
+from dewan_calcium.helpers import parse_json
 
 
 def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell_names_override=None,
