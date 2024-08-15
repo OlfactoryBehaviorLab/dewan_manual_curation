@@ -7,7 +7,7 @@ setup(
     author='Austin Pauley, Dewan Lab, Florida State University',
     author_email='olfactorybehaviorlab@gmail.com',
     url='https://github.com/OlfactoryBehaviorLab/dewan_manual_curation',
-    packages=['dewan_manual_curation'],
+    packages=['dewan_manual_curation', 'dewan_manual_curation._components'],
     python_requires=">=3.7, <3.11",
     install_requires=[
         'numpy',
