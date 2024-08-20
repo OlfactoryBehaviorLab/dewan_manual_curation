@@ -21,6 +21,13 @@ from dewan_calcium.helpers import parse_json
 def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell_names_override=None,
                cell_contours_override=None):
 
+    # See if an application exists, if not make our own
+    app = QApplication.instance()
+    if not app:
+        app = QApplication([])
+
+    qdarktheme.setup_theme('dark')
+
     if project_folder_override is None:
         project_folder = ProjectFolder(select_dir=True)
     else:
@@ -31,17 +38,9 @@ def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell
 
     cell_traces = CellTrace.generate_cell_traces(cell_trace_data, cell_names)
 
-    app = QApplication.instance()
-
-    if not app:
-        app = QApplication([])
-
-    qdarktheme.setup_theme('dark')
-
     window = ManualCurationUI(cell_names, cell_traces, cell_contours,
                               project_folder.inscopix_dir.max_projection_path)
     window.show()
-
     return_val = app.exec()
 
     if return_val == 0:  # 0: Success! | 1: Failure!
