@@ -1,8 +1,0 @@
-numpy
-pandas>2.0.0
-matplotlib
-PySide6 >= 6.5.0
-Shapely
-scikit-learn
-pyqtdarktheme
-pyarrow

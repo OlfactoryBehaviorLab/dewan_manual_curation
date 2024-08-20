@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "dewan-manual-curation"
+version = "2.0.0"
+description = ""
+authors = ["Austin Pauley <austin2118ace@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10"
+PySide6 = "6.5.0"
+matplotlib = "^3.9.2"
+pyqtdarktheme = "^2.1.0"
+pandas = "^2.2.2"
+scikit-learn = "^1.5.1"
+numpy = "<2.0"
+shapely = "^2.0.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
