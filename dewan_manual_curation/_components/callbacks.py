@@ -1,6 +1,7 @@
 """ Parent Class for ManualCurationUI to provide callback methods """
 
 from PySide6.QtCore import Qt
+from PySide6 import QtWidgets
 
 UNCHECKED = Qt.CheckState.Unchecked
 CHECKED = Qt.CheckState.Checked
@@ -37,9 +38,18 @@ class GuiCallbacks:
         self.max_projection.reset_polygon_colors()
 
     def transfer_view(self):
+        modifiers = QtWidgets.QApplication.keyboardModifiers()
+
         for i, checkbox in enumerate(self.cell_view_checkbox_list):
             selection_checkbox = self.cell_selection_checkbox_list[i]
             view_checkbox_state = checkbox.checkState()
+
+            if modifiers == Qt.KeyboardModifier.ControlModifier:
+                if view_checkbox_state == CHECKED:
+                    view_checkbox_state = UNCHECKED
+                else:
+                    view_checkbox_state = CHECKED
+
             selection_checkbox.setCheckState(view_checkbox_state)
 
 
