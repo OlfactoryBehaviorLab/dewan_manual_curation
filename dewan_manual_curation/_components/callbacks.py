@@ -36,6 +36,13 @@ class GuiCallbacks:
 
         self.max_projection.reset_polygon_colors()
 
+    def transfer_view(self):
+        for i, checkbox in enumerate(self.cell_view_checkbox_list):
+            selection_checkbox = self.cell_selection_checkbox_list[i]
+            view_checkbox_state = checkbox.checkState()
+            selection_checkbox.setCheckState(view_checkbox_state)
+
+
     def on_checkbox_release(self, checkbox):
         cell_key = checkbox.text()
         check_state = checkbox.checkState()

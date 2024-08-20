@@ -33,6 +33,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.cell_view_scroll_area = None
         self.view_all_button = None
         self.view_none_button = None
+        self.transfer_view_button = None
         # Cell Trace List Components
         self.cell_trace_scroll_area_contents = None
         self.cell_trace_scroll_area = None
@@ -213,13 +214,16 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
         self.cell_view_controls_layout = QHBoxLayout()
         self.view_all_button = QPushButton(u'View All')
         self.view_none_button = QPushButton(u'View None')
+        self.transfer_view_button = QPushButton(u'^ Transfer Selection ^')
         self.view_all_button.clicked.connect(self.view_all)
         self.view_none_button.clicked.connect(self.view_none)
+        self.transfer_view_button.clicked.connect(self.transfer_view)
         self.cell_view_controls_layout.addWidget(self.view_all_button)
         self.cell_view_controls_layout.addWidget(self.view_none_button)
 
         self.cell_view_layout.addWidget(self.cell_view_scroll_area)
         self.cell_view_layout.addLayout(self.cell_view_controls_layout)
+        self.cell_view_layout.addWidget(self.transfer_view_button) 
         self.cell_trace_box_layout.addLayout(self.cell_view_layout)
 
         # ==Cell Trace View== #
