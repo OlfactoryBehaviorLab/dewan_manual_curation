@@ -50,26 +50,23 @@ def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell
         return None
 
 
-def get_data(project_folder, cell_trace_data_override, cell_names_override, cell_contours_override):
-
+def get_data(project_folder, cell_trace_data_override, cell_props_override, cell_contours_override):
     if cell_trace_data_override is None:
-        cell_trace_data = []
-        pass  # Load cell trace data from pickle
+        cell_trace_data = pd.read_csv(project_folder.inscopix_dir.cell_trace_path, engine='pyarrow')
     else:
         cell_trace_data = cell_trace_data_override
 
-    if cell_names_override is None:
+    if cell_props_override is None:
         cell_props = pd.read_csv(project_folder.inscopix_dir.props_path, header=0, engine='pyarrow')
-        cell_names = cell_props['Name']
     else:
-        cell_names = cell_names_override
+        cell_props = cell_props_override
 
     if cell_contours_override is None:
-        _, cell_contours = DewanJSON.get_outline_coordinates(project_folder.inscopix_dir.contours_path)
+        cell_contours = parse_json.get_outline_coordinates(project_folder.inscopix_dir.contours_path)
     else:
         cell_contours = cell_contours_override
 
-    return cell_trace_data, cell_names, cell_contours
+    return cell_trace_data, cell_props, cell_contours
 
 
 def _preprocess_data(cell_trace_data, cell_props):
