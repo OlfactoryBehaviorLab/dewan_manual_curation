@@ -5,7 +5,6 @@ Date: 06/2024
 Desc: User interface to enable simultaneous 1-P calcium fluorescence traces (dF/F) along with the
 spatial positioning of different cells. This interface is intended to be launched both from,
 or independent of, the DewanLab InscopixAnalysis.ipynb processing pipeline notebook.
-Version: 2.2
 """
 
 import qdarktheme

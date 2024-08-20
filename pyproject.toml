@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dewan-manual-curation"
-version = "2.0.0"
+version = "2.2.1"
 description = ""
 authors = ["Austin Pauley <austin2118ace@gmail.com>"]
 readme = "README.md"
