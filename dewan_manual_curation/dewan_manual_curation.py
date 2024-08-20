@@ -29,7 +29,9 @@ def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell
     qdarktheme.setup_theme('dark')
 
     if project_folder_override is None:
-        project_folder = ProjectFolder(select_dir=True)
+        project_folder = ProjectFolder('MAN', root_dir=root_directory_override,
+                                       select_dir=True, existing_app=app)
+        # If no folder provided, we pick
     else:
         project_folder = project_folder_override
 
