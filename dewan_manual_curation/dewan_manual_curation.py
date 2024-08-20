@@ -35,8 +35,11 @@ def launch_gui(project_folder_override=None, cell_trace_data_override=None, cell
     else:
         project_folder = project_folder_override
 
-    cell_trace_data, cell_names, cell_contours = get_data(project_folder, cell_trace_data_override,
-                                                          cell_names_override, cell_contours_override)
+    raw_cell_trace_data, raw_cell_props, cell_contours = get_data(project_folder, cell_trace_data_override,
+                                                                  cell_props_override, cell_contours_override)
+    # Load all the raw data
+    cell_trace_data, cell_props, cell_names = _preprocess_data(raw_cell_trace_data, raw_cell_props)
+    # There is some preprocessing needed; this replicates what is seen in the jupyter notebooks
 
     cell_traces = CellTrace.generate_cell_traces(cell_trace_data, cell_names)
 
