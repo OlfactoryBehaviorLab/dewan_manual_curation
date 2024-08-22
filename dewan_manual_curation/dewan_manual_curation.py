@@ -72,7 +72,7 @@ def get_data(project_folder, cell_trace_data_override, cell_props_override, cell
     return cell_trace_data, cell_props, cell_contours
 
 
-def _preprocess_data(cell_trace_data, cell_props):
+def _preprocess_trace_data(cell_trace_data):
     # Drop the first row which contains all 'undecided' labels which is the Inscopix default label.
     cell_trace_data = cell_trace_data.drop([0])
     # Force all dF/F values to be numbers and round times to 2 decimal places
@@ -83,11 +83,18 @@ def _preprocess_data(cell_trace_data, cell_props):
     # Remove spaces from column names and contents
     cell_trace_data.columns = cell_trace_data.columns.str.replace(" ", "")
 
-    cell_props = cell_props[cell_props['NumComponents'] == 1]  # We only want cells that have one component
+    return cell_trace_data
+
+
+def _preprocess_props(cell_props):
+    # We only want cells that have one component
+    cell_props = cell_props[cell_props['NumComponents'] == 1]
+    # Get rid of the Status Column
     cell_props = cell_props.drop(columns='Status').reset_index(drop=True)
+    # Extract the names of the cells
     cell_names = cell_props['Name'].values
 
-    return cell_trace_data, cell_props, cell_names
+    return cell_props, cell_names
 
 
 if __name__ == '__main__':
