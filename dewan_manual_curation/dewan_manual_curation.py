@@ -17,9 +17,8 @@ from ._components.cell_trace import CellTrace
 from dewan_calcium.helpers import parse_json
 
 
-def launch_gui(root_directory_override=None, project_folder_override=None, cell_trace_data_override=None,\
+def launch_gui(root_directory_override=None, project_folder_override=None, cell_trace_data_override=None,
                cell_props_override=None, cell_contours_override=None):
-
     # See if an application exists, if not make our own
     app = QApplication.instance()
     if not app:
