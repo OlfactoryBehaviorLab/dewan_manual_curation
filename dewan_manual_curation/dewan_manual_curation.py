@@ -34,11 +34,18 @@ def launch_gui(root_directory_override=None, project_folder_override=None, cell_
     else:
         project_folder = project_folder_override
 
-    raw_cell_trace_data, raw_cell_props, cell_contours = get_data(project_folder, cell_trace_data_override,
-                                                                  cell_props_override, cell_contours_override)
+    cell_trace_data, cell_props, cell_contours = get_data(project_folder, cell_trace_data_override,
+                                                          cell_props_override, cell_contours_override)
     # Load all the raw data
-    cell_trace_data, cell_props, cell_names = _preprocess_data(raw_cell_trace_data, raw_cell_props)
-    # There is some preprocessing needed; this replicates what is seen in the jupyter notebooks
+
+    # There is some preprocessing needed if we load the data from disk
+    # This replicates what is seen in the jupyter notebooks
+    if cell_trace_data_override is None:
+        cell_trace_data = _preprocess_trace_data(cell_trace_data)
+    if cell_props_override is None:
+        cell_props, cell_names = _preprocess_props(cell_props)
+
+    cell_names = cell_props['Name'].values
 
     cell_traces = CellTrace.generate_cell_traces(cell_trace_data, cell_names)
 
