@@ -6,14 +6,17 @@ Desc: User interface to enable simultaneous 1-P calcium fluorescence traces (dF/
 spatial positioning of different cells. This interface is intended to be launched both from,
 or independent of, the DewanLab InscopixAnalysis.ipynb processing pipeline notebook.
 """
+import os
+os.environ['ISX'] = '0'
+
 
 import qdarktheme
 import pandas as pd
 from PySide6.QtWidgets import QApplication
 # Our Libraries
-from .gui import ManualCurationUI
+from gui import ManualCurationUI
 from dewan_calcium.helpers.project_folder import ProjectFolder
-from ._components.cell_trace import CellTrace
+from _components.cell_trace import CellTrace
 from dewan_calcium.helpers import parse_json
 
 
