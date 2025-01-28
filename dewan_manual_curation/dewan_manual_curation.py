@@ -14,9 +14,9 @@ import qdarktheme
 import pandas as pd
 from PySide6.QtWidgets import QApplication
 # Our Libraries
-from gui import ManualCurationUI
+from dewan_manual_curation.gui import ManualCurationUI
 from dewan_calcium.helpers.project_folder import ProjectFolder
-from _components.cell_trace import CellTrace
+from dewan_manual_curation._components.cell_trace import CellTrace
 from dewan_calcium.helpers import parse_json
 
 
