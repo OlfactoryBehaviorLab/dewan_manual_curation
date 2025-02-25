@@ -64,7 +64,7 @@ class MaximumProjection(QGraphicsScene):
 
         self.render(painter, image.rect(), scene_rect)
         painter.end()
-        save_path = self.image_path.with_stem(f'labeled-{self.image_path.stem}')
+        save_path = self.image_path.with_stem(f'labeled-HD-maxproj').with_suffix('.tif')
         image.save(str(save_path))
 
     def _load_maxproj_image(self):
