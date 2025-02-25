@@ -57,6 +57,7 @@ def launch_gui(root_directory_override=None, project_folder_override=None, cell_
     return_val = app.exec()
 
     if return_val == 0:  # 0: Success! | 1: Failure!
+        window.max_projection.save()
         return window.curated_cells
     else:
         return None
