@@ -1,6 +1,8 @@
 """ Maximum Projection QGraphicsScene extension """
-from PySide6.QtCore import QPoint, Qt
-from PySide6.QtGui import QImage, QPixmap, QPolygonF, QPen, QBrush, QFont
+import pathlib
+
+from PySide6.QtCore import QPoint, Qt, QRect
+from PySide6.QtGui import QImage, QPixmap, QPolygonF, QPen, QBrush, QFont, QPainter
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QGraphicsTextItem
 from shapely import Polygon
 
@@ -53,6 +55,16 @@ class MaximumProjection(QGraphicsScene):
     def reset_polygon_colors(self):
         for cell in self.cells:
             self.change_outline_color(cell, 0)
+
+    def save(self, path: pathlib.Path):
+        scene_rect = QRect(self.sceneRect())
+        image = QImage(scene_rect.size(), QImage.Format.Format_ARGB32_Premultiplied)
+        painter = QPainter(image)
+
+        self.render(painter, image.rect(), scene_rect)
+        painter.end()
+
+        image.save('Test.png')
 
     def _load_maxproj_image(self):
         self.image = QImage(self.image_path)
