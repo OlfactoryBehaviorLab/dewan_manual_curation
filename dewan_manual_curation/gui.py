@@ -3,10 +3,10 @@ from PySide6.QtGui import QFont, QWheelEvent, QShowEvent
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout, QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsView, QWidget, QListWidget, QAbstractItemView)
 
-from dewan_manual_curation._components.cell_trace import CellTrace
-from dewan_manual_curation._components.callbacks import GuiCallbacks
-from dewan_manual_curation._components.funcs import GuiFuncs
-from dewan_manual_curation._components.maxprojection import MaximumProjection
+from ._components.cell_trace import CellTrace
+from ._components.callbacks import GuiCallbacks
+from ._components.funcs import GuiFuncs
+from ._components.maxprojection import MaximumProjection
 
 
 class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):

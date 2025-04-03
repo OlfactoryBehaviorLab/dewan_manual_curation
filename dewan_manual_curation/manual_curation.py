@@ -2,21 +2,22 @@
 Name: DewanLab Manual Curation V2
 Author: Austin Pauley (Dewan Lab, FSU)
 Date: 06/2024
-Desc: User interface to enable simultaneous 1-P calcium fluorescence traces (dF/F) along with the
+Desc: User interface to enable simultaneous visualization of 1-P calcium fluorescence traces (dF) along with the
 spatial positioning of different cells. This interface is intended to be launched both from,
 or independent of, the DewanLab InscopixAnalysis.ipynb processing pipeline notebook.
 """
 import os
 os.environ['ISX'] = '0'
 
-
 import qdarktheme
 import pandas as pd
 from PySide6.QtWidgets import QApplication
+
 # Our Libraries
-from dewan_manual_curation.gui import ManualCurationUI
+from .gui import ManualCurationUI
+from ._components.cell_trace import CellTrace
+
 from dewan_calcium.helpers.project_folder import ProjectFolder
-from dewan_manual_curation._components.cell_trace import CellTrace
 from dewan_calcium.helpers import parse_json
 
 
@@ -106,6 +107,3 @@ def _preprocess_props(cell_props):
 
     return cell_props, cell_names
 
-
-if __name__ == '__main__':
-    launch_gui()
