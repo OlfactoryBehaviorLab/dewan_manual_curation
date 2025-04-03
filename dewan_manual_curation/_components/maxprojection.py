@@ -57,6 +57,7 @@ class MaximumProjection(QGraphicsScene):
             self.change_outline_color(cell, 0)
 
     def save(self):
+        self.reset_polygon_colors()
         scene_rect = QRectF(self.sceneRect())
         scene_size = scene_rect.size().toSize()
         image = QImage(scene_size.width(), scene_size.height(), QImage.Format.Format_ARGB32_Premultiplied)
