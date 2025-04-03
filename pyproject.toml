@@ -1,6 +1,6 @@
 [project]
 name = "dewan_manual_curation"
-version = "2.2.1"
+version = "2.3.1"
 description = "Interface for manually curating cells identified by the CNMFe algorithm"
 authors = [{name = "Austin Pauley", email="austin2118ace@gmail.com"}]
 readme = "README.md"
