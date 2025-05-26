@@ -75,14 +75,15 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self._init_window_params()
         self.initUI()
-        self._configure_maxproj_view()
+        if self.maxproj_path is not None:
+            self._configure_maxproj_view()
         self._populate_cell_traces()
         self._get_trace_pointers()
 
     #  Function Overloads
     def eventFilter(self, obj, event):
         if type(event) is QWheelEvent:
-            if type(obj) is CellTrace:
+            if type(obj) is AnalogTrace:
                 self.cell_trace_scroll_area.wheelEvent(event)
                 return True
             elif obj is self.max_projection_view.viewport():
@@ -91,7 +92,7 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
                     steps = int(num_degrees.y() / 15)
                     self._zoom_image(steps)
                     return True
-        elif type(event) is QShowEvent and obj is self.max_projection_view.viewport():
+        elif type(event) is QShowEvent and self.max_projection_view is not None and obj is self.max_projection_view.viewport():
             self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
             # We don't actually wanna handle this event, just needed to run this with it
 
@@ -109,8 +110,9 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
     def resizeEvent(self, event):
         event.accept()
         if self.scale == 1:
-            self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
-            self.scale = 1
+            if self.max_projection_view is not None:
+                self.max_projection_view.fitInView(self.max_projection.itemsBoundingRect(), Qt.KeepAspectRatio)
+                self.scale = 1
 
     def initUI(self):
 
@@ -155,37 +157,42 @@ class ManualCurationUI(GuiFuncs, GuiCallbacks, QDialog):
 
         self.top_half_container.addWidget(self.cell_list_box)  # Cell list to top half
 
-        # ==Maximum Projection View== #
+
+
+        # ==Max Projection Display== #
         self.max_projection_box = QGroupBox("Max Projection")  # Create the max projection box
         self.max_projection_box.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.max_projection_box.setMinimumSize(300, 300)
         self.max_projection_layout = QHBoxLayout()
         self.max_projection_box.setLayout(self.max_projection_layout)
 
-        self.max_projection_controls = QVBoxLayout()
-        self.max_projection_controls.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.zoom_in = QPushButton("+")
-        self.zoom_out = QPushButton("-")
-        self.zoom_reset = QPushButton("R")
-        self.zoom_in.clicked.connect(self.zoom_image_in)
-        self.zoom_out.clicked.connect(self.zoom_image_out)
-        self.zoom_reset.clicked.connect(self.reset_image_zoom)
+        if self.maxproj_path is not None:
+            # ==Maximum Projection View== #
 
-        self.max_projection_controls.addWidget(self.zoom_in)
-        self.max_projection_controls.addWidget(self.zoom_out)
-        self.max_projection_controls.addWidget(self.zoom_reset)
-        self.max_projection_layout.addLayout(self.max_projection_controls)
 
-        # ==Max Projection Display== #
-        self.max_projection = MaximumProjection(self.cells, self.cell_contours, self.maxproj_path)
-        self.max_projection_view = QGraphicsView()
+            self.max_projection_controls = QVBoxLayout()
+            self.max_projection_controls.setAlignment(Qt.AlignmentFlag.AlignTop)
+            self.zoom_in = QPushButton("+")
+            self.zoom_out = QPushButton("-")
+            self.zoom_reset = QPushButton("R")
+            self.zoom_in.clicked.connect(self.zoom_image_in)
+            self.zoom_out.clicked.connect(self.zoom_image_out)
+            self.zoom_reset.clicked.connect(self.reset_image_zoom)
 
-        self.max_projection_view.setScene(self.max_projection)
+            self.max_projection_controls.addWidget(self.zoom_in)
+            self.max_projection_controls.addWidget(self.zoom_out)
+            self.max_projection_controls.addWidget(self.zoom_reset)
+            self.max_projection_layout.addLayout(self.max_projection_controls)
+            self.max_projection = MaximumProjection(self.cells, self.cell_contours, self.maxproj_path)
+            self.max_projection_view = QGraphicsView()
 
-        self.max_projection_layout.addWidget(self.max_projection_view)
+            self.max_projection_view.setScene(self.max_projection)
 
-        # Add the list and max projection box to the top half layout
+            self.max_projection_layout.addWidget(self.max_projection_view)
+
+            # Add the list and max projection box to the top half layout
         self.top_half_container.addWidget(self.max_projection_box)
+
         self.main_layout.addLayout(self.top_half_container)
 
         # ==BOTTOM HALF== #

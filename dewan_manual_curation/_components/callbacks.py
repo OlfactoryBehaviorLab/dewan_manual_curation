@@ -28,14 +28,15 @@ class GuiCallbacks:
         for trace in self.trace_pointers:
             trace.setHidden(False)
 
-        self.max_projection.reset_polygon_colors()
+        if self.max_projection is not None:
+            self.max_projection.reset_polygon_colors()
 
     def view_none(self):
         self.change_view_checkboxes(False)
         for trace in self.trace_pointers:
             trace.setHidden(True)
-
-        self.max_projection.reset_polygon_colors()
+        if self.max_projection is not None:
+            self.max_projection.reset_polygon_colors()
 
     def transfer_view(self):
         modifiers = QtWidgets.QApplication.keyboardModifiers()
