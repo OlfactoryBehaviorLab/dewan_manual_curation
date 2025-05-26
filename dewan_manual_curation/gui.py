@@ -3,7 +3,7 @@ from PySide6.QtGui import QFont, QWheelEvent, QShowEvent
 from PySide6.QtWidgets import (QDialog, QPushButton, QVBoxLayout, QHBoxLayout, QGroupBox, QScrollArea, QSizePolicy,
                                QGraphicsView, QWidget, QListWidget, QAbstractItemView)
 
-from ._components.cell_trace import CellTrace
+from ._components.analog_trace import AnalogTrace
 from ._components.callbacks import GuiCallbacks
 from ._components.funcs import GuiFuncs
 from ._components.maxprojection import MaximumProjection

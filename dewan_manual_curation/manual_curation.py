@@ -15,7 +15,7 @@ from PySide6.QtWidgets import QApplication
 
 # Our Libraries
 from .gui import ManualCurationUI
-from ._components.cell_trace import CellTrace
+from ._components.analog_trace import AnalogTrace
 
 from dewan_calcium.helpers.project_folder import ProjectFolder
 from dewan_calcium.helpers import parse_json

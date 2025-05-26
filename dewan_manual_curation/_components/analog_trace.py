@@ -16,25 +16,33 @@ mpl.rcParams['font.family'] = 'arial'
 mpl.rcParams['font.weight'] = 'bold'
 mpl.rcParams['font.size'] = 14
 
+LICK_SIZE = 20
 
-class CellTrace(FigureCanvasQTAgg):
+class AnalogTrace(FigureCanvasQTAgg):
     def __init__(self, parent=None, width=30, height=1.1, dpi=100, figure_min_max=(0, 1), reference_line=False,
-                 reference_line_color='r'):
+                 reference_line_color='r', sniff_trace: bool=False):
         self.parent = parent
         self.dpi = dpi
+        self.sniff_trace = sniff_trace
 
         self.figure_min_max = figure_min_max
         self.reference_line = reference_line
         self.reference_line_color = reference_line_color
-        self.reference_line_color = reference_line_color
-        self.trace_name = 'No_Cell_Present'
+        self.trace_name = 'No_Trace_Present'
+
+        if self.sniff_trace:
+            self.sub_name = f'Trial: {self.trace_name}'
+        else:
+            self.sub_name = f'Cell: {self.trace_name}'
 
         self.figure = Figure(figsize=(width, height), dpi=dpi)
         self.axes = self.figure.add_subplot(111)
         super().__init__(self.figure)
 
+
     def __str__(self):
-        return f'Manual Curation Trace {{Cell: {self.trace_name}}}'
+        return f'Manual Curation Trace {{{self.sub_name}}}'
+
 
     def plot_trace(self, trace_data: pd.Series, cell_name):
 
@@ -69,14 +77,22 @@ class CellTrace(FigureCanvasQTAgg):
         self.axes.get_yaxis().set_label_coords(-0.1, 0.5)  # Align all the things
         self.axes.yaxis.tick_right()
 
-        self.axes.set_ylabel(f'Cell: {self.trace_name}', rotation=0, va='center', ha='center')
+        self.axes.set_ylabel(f'{self.sub_name}', rotation=0, va='center', ha='center')
 
         self._set_trace_sizing()  # Reset sizing after plotting
+
+
+    def plot_sniff_trace(self, trace_data, lick_data, cell_name):
+        self.plot_trace(trace_data, cell_name)
+        _y_max = np.max(trace_data)
+        self.axes.vlines(x=lick_data, ymin=_y_max-LICK_SIZE, ymax=_y_max, color='red')
+
 
     def _set_trace_sizing(self):
         width, height = self.get_width_height()
         self.setMinimumSize(width/3, height)
         self.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding))
+
 
     @staticmethod
     def _scale_data(trace_data: pd.Series, feature_range: tuple):
@@ -88,13 +104,28 @@ class CellTrace(FigureCanvasQTAgg):
 
         return scaled_data
 
+
     @staticmethod
     def generate_cell_traces(cell_trace_data, cell_names):
         cell_traces = []
         for cell in cell_names:
             data = cell_trace_data[cell].values
-            _cell_trace = CellTrace(reference_line=True)
+            _cell_trace = AnalogTrace(reference_line=True)
             _cell_trace.plot_trace(data, cell)
             cell_traces.append(_cell_trace)
 
         return cell_traces
+
+    @staticmethod
+    def generate_sniff_traces(trial_names, h5_file):
+        all_sniff_traces = []
+
+        for name in trial_names:
+            sniff_data = h5_file.sniff[name]
+            lick_data = h5_file.lick1[name]
+
+            _sniff_trace = AnalogTrace(reference_line=False)
+            _sniff_trace.plot_sniff_trace(sniff_data, lick_data, name)
+            all_sniff_traces.append(_sniff_trace)
+
+        return all_sniff_traces
