@@ -17,8 +17,11 @@ from PySide6.QtWidgets import QApplication
 from .gui import ManualCurationUI
 from ._components.analog_trace import AnalogTrace
 
-from dewan_calcium.helpers.project_folder import ProjectFolder
-from dewan_calcium.helpers import parse_json
+import os
+
+if 'calcium' in os.environ:
+    from dewan_calcium.helpers.project_folder import ProjectFolder
+    from dewan_calcium.helpers import parse_json
 
 
 def launch_gui(root_directory_override=None, project_folder_override=None, cell_trace_data_override=None,
@@ -50,15 +53,36 @@ def launch_gui(root_directory_override=None, project_folder_override=None, cell_
 
     cell_names = cell_props['Name'].values
 
-    cell_traces = CellTrace.generate_cell_traces(cell_trace_data, cell_names)
+    cell_traces = AnalogTrace.generate_cell_traces(cell_trace_data, cell_names)
 
     window = ManualCurationUI(cell_names, cell_traces, cell_contours,
                               project_folder.inscopix_dir.max_projection_path)
+
     window.show()
     return_val = app.exec()
 
     if return_val == 0:  # 0: Success! | 1: Failure!
         window.max_projection.save()
+        return window.curated_cells
+    else:
+        return None
+
+
+def launch_sniff_gui(sniff_traces: list[AnalogTrace], trial_names):
+    # See if an application exists, if not make our own
+    app = QApplication.instance()
+    if not app:
+        app = QApplication([])
+
+    qdarktheme.setup_theme('dark')
+
+
+    window = ManualCurationUI(trial_names, sniff_traces, None,
+                              None)
+    window.show()
+    return_val = app.exec()
+
+    if return_val == 0:  # 0: Success! | 1: Failure!
         return window.curated_cells
     else:
         return None
